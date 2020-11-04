@@ -12,9 +12,12 @@
 */
 
 Route::get('/', function () {
-    //echo phpinfo();
     return view('welcome');
+});
+Route::get('/info', function () {
+    echo phpinfo();
 });
 Route::get('/hello', function () {
     echo 'hello wx';
 });
+Route::get('/text','TextController@text');// redis测试
