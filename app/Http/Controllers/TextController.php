@@ -15,7 +15,7 @@ class TextController extends Controller
         //用DB查询数据库
 //        $student  = DB::table('student')->get();
 //        dd($student);
-        
+
 //          $key = 'wx2004';
 //          Redis::set($key,time());// redis设置
 //          echo Redis::get($key);// redis获取
