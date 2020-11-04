@@ -11,7 +11,6 @@ class TextController extends Controller
     public function text(){
         // 用模型查询数据库
           $res = StudentModel::get();
-          dd($res);
         //用DB查询数据库
 //        $student  = DB::table('student')->get();
 //        dd($student);
