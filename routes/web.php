@@ -23,4 +23,4 @@ Route::get('/hello', function () {
 });
 Route::get('/text','TextController@text');// redis测试
 Route::get('/text1','TextController@text1');// 测试1
-Route::get('/checkSignature','WeiXinController@checkSignature');// 微信接口
+Route::get('/wx','WeiXinController@wx');// 微信接口
