@@ -21,3 +21,4 @@ Route::get('/hello', function () {
     echo 'hello wx';
 });
 Route::get('/text','TextController@text');// redis测试
+Route::get('/text1','TextController@text1');// 测试1

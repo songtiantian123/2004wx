@@ -19,4 +19,8 @@ class TextController extends Controller
 //          Redis::set($key,time());// redis设置
 //          echo Redis::get($key);// redis获取
     }
+    /** 测试1*/
+    public function text1(){
+        echo '测试1';
+    }
 }
