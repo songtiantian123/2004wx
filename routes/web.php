@@ -10,10 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/**laravel首页 */
 Route::get('/', function () {
     return view('welcome');
 });
+/**php首页 */
 Route::get('/info', function () {
     echo phpinfo();
 });
@@ -22,3 +23,4 @@ Route::get('/hello', function () {
 });
 Route::get('/text','TextController@text');// redis测试
 Route::get('/text1','TextController@text1');// 测试1
+Route::get('/checkSignature','WeiXinController@checkSignature');// 微信接口
