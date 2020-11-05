@@ -25,8 +25,8 @@ class WeiXinController extends Controller
     }
 }
     public function wx(){
-        $token = request()->get('echostr');
-        if(!empty($token) && $this->checkSignature){
+        $token = request()->get('echostr','');
+        if(!empty($token) && $this->checkSignature()){
             echo $token;
         }
     }
