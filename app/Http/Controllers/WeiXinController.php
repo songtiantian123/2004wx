@@ -6,28 +6,28 @@ use Illuminate\Http\Request;
 
 class WeiXinController extends Controller
 {
-    public function checkSignature()
+    public function wx()
 {
     $signature = $_GET["signature"];
     $timestamp = $_GET["timestamp"];
     $nonce = $_GET["nonce"];
-	
-    $token = 123;
+
+    $token = env('WX_TOKEN');
     $tmpArr = array($token, $timestamp, $nonce);
     sort($tmpArr, SORT_STRING);
     $tmpStr = implode( $tmpArr );
     $tmpStr = sha1( $tmpStr );
-    
+
     if( $tmpStr == $signature ){
-        return true;
+        echo $_GET['echostr'];
     }else{
-        return false;
+        echo '失败';
     }
 }
-    public function wx(){
-        $token = request()->get('echostr','');
-        if(!empty($token) && $this->checkSignature()){
-            echo $token;
-        }
-    }
+//    public function wx(){
+//        $token = request()->get('echostr','');
+//        if(!empty($token) && $this->checkSignature()){
+//            echo $token;
+//        }
+//    }
 }
