@@ -31,6 +31,7 @@ class WeiXinController extends Controller
      */
     public function wxEvent(Request $request)
     {
+        $wechatObj = new wechatCallbackapiTest();
         $echostr=$request->echostr;
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
@@ -48,7 +49,8 @@ class WeiXinController extends Controller
             // 记录日志
             file_put_contents('wx_event.log',$xml_str);
             echo "";
-            die;
+//            die;
+            $wechatObj->responseMsg();
             // 2 把xml文本转换为php的对象或数组
             $data = simplexml_load_string($xml_str,'SimpleXMLElement',LTBXML_NOCDATA);
             // 3 获取接收到的数据信息
