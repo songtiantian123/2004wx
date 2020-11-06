@@ -43,14 +43,29 @@ class WeiXinController extends Controller
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){ //验证通过
-            // 接收数据
+            // 1 接收数据
             $xml_str = file_get_contents("php://input");
             // 记录日志
             file_put_contents('wx_event.log',$xml_str);
             echo "";
-            die;
+//            die;
             // 2 把xml文本转换为php的对象或数组
             $data = simplexml_load_string($xml_str,'SimpleXMLElement',LTBXML_NOCDATA);
+            // 3 获取接收到的数据信息
+            $formUsername = $data->FormUserName;
+            $toUsername = $data->ToUserName;
+            $keyword = trim($data->Content);
+            $time = time();
+            // 4 使用PHP代码发送微信信息
+            if(!empty($keyword)){
+                $msgType = "text";
+                $contentStr = "谢谢关注";// 回复内容
+                $resultStr = sprintf($msgType,$formUsername,$toUsername,$time,$msgType,$contentStr);
+                echo $resultStr;
+            }else{
+                echo "Input something...";
+            }
+
         }else{
             echo '';
         }
