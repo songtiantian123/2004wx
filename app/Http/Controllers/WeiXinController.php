@@ -25,6 +25,26 @@ class WeiXinController extends Controller
             return false;
         }
     }
+
+    public function wxEvent(Request $request)
+    {
+        $echostr=$request->echostr;
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+
+        $token = env('WX_TOKEN');
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+
+        if( $tmpStr == $signature ){ //验证通过
+            echo '';
+        }else{
+            echo '';
+        }
+    }
     /**
      * 获取access_token
      */
