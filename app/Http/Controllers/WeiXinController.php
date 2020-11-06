@@ -49,9 +49,11 @@ class WeiXinController extends Controller
             // 记录日志
             file_put_contents('wx_event.log',$xml_str);
             echo "";
-            die;
+//            die;
             $wechatObj = new wechatCallbackapiTest();
-            $wechatObj->vaild();
+            // valid方法代表验证接口
+            $wechatObj->valid();
+            // 开启responseMsg回复接口
             $wechatObj->responseMsg();
             // 2 把xml文本转换为php的对象或数组
             $data = simplexml_load_string($xml_str,'SimpleXMLElement',LTBXML_NOCDATA);
@@ -64,7 +66,14 @@ class WeiXinController extends Controller
             if(!empty($keyword)){
                 $msgType = "text";
                 $contentStr = "谢谢关注";// 回复内容
-                $resultStr = sprintf($formUsername,$toUsername,$time,$msgType,$contentStr);
+                $resultStr = "<xml><ToUserName><![CDATA[gh_6e8f9e020d60]]></ToUserName>
+<FromUserName><![CDATA[obhsv6YWuyDAfIWqGsnCyxIQ6h-g]]></FromUserName>
+<CreateTime>1604657195</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[1]]></Content>
+<MsgId>22973168672632691</MsgId>
+</xml>
+";
                 echo $resultStr;
             }else{
                 echo "Input something...";
