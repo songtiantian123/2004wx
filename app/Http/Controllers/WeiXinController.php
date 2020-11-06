@@ -60,12 +60,11 @@ class WeiXinController extends Controller
             if(!empty($keyword)){
                 $msgType = "text";
                 $contentStr = "谢谢关注";// 回复内容
-                $resultStr = sprintf($msgType,$formUsername,$toUsername,$time,$msgType,$contentStr);
+                $resultStr = sprintf($formUsername,$toUsername,$time,$msgType,$contentStr);
                 echo $resultStr;
             }else{
                 echo "Input something...";
             }
-
         }else{
             echo '';
         }
