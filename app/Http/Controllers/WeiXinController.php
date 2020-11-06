@@ -49,7 +49,7 @@ class WeiXinController extends Controller
             // 记录日志
             file_put_contents('wx_event.log',$xml_str);
             echo "";
-//            die;
+            die;
             $wechatObj = new wechatCallbackapiTest();
             $wechatObj->vaild();
             $wechatObj->responseMsg();
