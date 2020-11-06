@@ -25,10 +25,4 @@ class WeiXinController extends Controller
         echo '失败';
     }
 }
-//    public function wx(){
-//        $token = request()->get('echostr','');
-//        if(!empty($token) && $this->checkSignature()){
-//            echo $token;
-//        }
-//    }
 }
