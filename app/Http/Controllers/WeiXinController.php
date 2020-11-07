@@ -33,8 +33,8 @@ class WeiXinController extends Controller
                 // 关注
                 if (strtolower($data->Event == "subscribe")) {
                     // 回复用户消息  纯文本格式
-                    file_put_contents('logs.log',1);
                     $toUser = $data->FormUserName;
+                    file_put_contents('logs.log',$toUser);
                     $formUser = $data->ToUserName;
                     $msgType = 'text';
                     $content = '欢迎关注微信公众号';
@@ -45,7 +45,7 @@ class WeiXinController extends Controller
                                 <MsgType><![CDATA[%s]]></MsgType>
                                 <Content><![CDATA[%s]]></Content>
                                 </xml>";
-                        echo sprintf($template, $toUser, $formUser, time(), $msgType, $content);die;
+                        return sprintf($template, $toUser, $formUser, time(), $msgType, $content);
                     }
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
