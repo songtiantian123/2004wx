@@ -29,9 +29,7 @@ class WeiXinController extends Controller
     /**
      * 处理推送事件
      */
-    public function wxEvent(Request $request)
-    {
-
+    public function wxEvent(Request $request){
         $echostr=$request->echostr;
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
@@ -51,8 +49,9 @@ class WeiXinController extends Controller
 //            echo "";
 //            die;
             // 2 把xml文本转换为php的对象或数组
-            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LTBXML_NOCDATA);
-          if(strtolower($data->MsgType)=="event"){
+            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            // 判断该数据包是否是订阅的事件推送
+            if(strtolower($data->MsgType)=="event"){
               // 关注
               if(strtolower($data->Event=="subscribe")){
                   // 回复用户消息  纯文本格式
@@ -66,7 +65,6 @@ class WeiXinController extends Controller
                                     <CreateTime>%s</CreateTime>
                                     <MsgType><![CDATA[%s]]></MsgType>
                                     <Content><![CDATA[%s]]></Content>
-                                   
                                     </xml>";
                   $info = sprintf($template,$toUser,$formUser,time(),$msgType,$content);
                   return $info;
