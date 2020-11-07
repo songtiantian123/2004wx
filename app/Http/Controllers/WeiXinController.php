@@ -34,8 +34,8 @@ class WeiXinController extends Controller
                 if (strtolower($data->Event == "subscribe")) {
                     // 回复用户消息  纯文本格式
                     $toUser = $data->FormUserName;
-                    file_put_contents('logs.log',$toUser.'1');
                     $formUser = $data->ToUserName;
+                    file_put_contents('logs.log',$formUser.'1');
                     $msgType = 'text';
                     $content = '欢迎关注微信公众号';
                     $template = "<xml>
