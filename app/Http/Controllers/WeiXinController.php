@@ -47,37 +47,35 @@ class WeiXinController extends Controller
             // 1 接收数据
             $xml_str = file_get_contents("php://input");
             // 记录日志
-            file_put_contents('wx_event.log',$xml_str);
-            echo "";
-            die;
-            $wechatObj = new wechatCallbackapiTest();
-            // valid方法代表验证接口
-            $wechatObj->valid();
-            // 开启responseMsg回复接口
-            $wechatObj->responseMsg();
+//            file_put_contents('wx_event.log',$xml_str);
+//            echo "";
+//            die;
             // 2 把xml文本转换为php的对象或数组
             $data = simplexml_load_string($xml_str,'SimpleXMLElement',LTBXML_NOCDATA);
-            // 3 获取接收到的数据信息
-            $formUsername = $data->FormUserName;
-            $toUsername = $data->ToUserName;
-            $keyword = trim($data->Content);
-            $time = time();
-            // 4 使用PHP代码发送微信信息
-            if(!empty($keyword)){
-                $msgType = "text";
-                $contentStr = "谢谢关注";// 回复内容
-                $resultStr = "<xml><ToUserName><![CDATA[gh_6e8f9e020d60]]></ToUserName>
-<FromUserName><![CDATA[obhsv6YWuyDAfIWqGsnCyxIQ6h-g]]></FromUserName>
-<CreateTime>1604657195</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[1]]></Content>
-<MsgId>22973168672632691</MsgId>
-</xml>
-";
-                echo $resultStr;
-            }else{
-                echo "Input something...";
-            }
+          if(strtolower($data->MsgType)=="event"){
+              // 关注
+              if(strtolower($data->Event=="subscribe")){
+                  // 回复用户消息  纯文本格式
+                  $toUser = $data->FormUserName;
+                  $formUser = $data->ToUserName;
+                  $msgType = 'text';
+                  $content = '欢迎关注微信公众号';
+                  $template = "<xml>
+                                    <ToUserName><![CDATA[gh_6e8f9e020d60]]></ToUserName>
+                                    <FromUserName><![CDATA[obhsv6YWuyDAfIWqGsnCyxIQ6h-g]]></FromUserName>
+                                    <CreateTime>1604657195</CreateTime>
+                                    <MsgType><![CDATA[text]]></MsgType>
+                                    <Content><![CDATA[1]]></Content>
+                                    <MsgId>22973168672632691</MsgId>
+                                    </xml>";
+                  $info = sprintf($template,$toUser,$formUser,time(),$msgType,$content);
+                  return $info;
+              }
+              // 取消关注
+              if(strtolower($data->Event=='unsubscribe')){
+                  // 清除用户信息
+              }
+          }
         }else{
             echo '';
         }
