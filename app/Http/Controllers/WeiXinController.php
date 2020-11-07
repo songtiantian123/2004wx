@@ -48,50 +48,17 @@ class WeiXinController extends Controller
                             $info = sprintf($template, $toUser, $formUser, time(), $msgType, $content);
                             return $info;
                         }
-                    }
-                    // 取消关注
-                    if (strtolower($data->Event == 'unsubscribe')) {
-                        // 清除用户信息
-                    }
-                }
-                /*
-                // 天气
-                if(strtolower($data->MsgType)=="text"){
-                    switch ($data->Content){
-                        case "天气":
-                            $categoty = 1;
-                            $key = "d570bea572fd4f728f81686371ebbb2b";
-                            $url = "https://devapi.qweather.com/v7/weather/now?location101010100&key=".$key."&gzip=n";
-                            $api = file_get_contents($url);
-                            $api = json_decode($api,true);
-                            $content = "天气状态:" .$api['now']['text'].'
-                            风向：'.$api['now']['windDir'];
-                            break;
-                        default:
-                            $categoty = 1;
-                            $content = "和";
-                            break;
-                    }
-                    $toUser = $data->FormUserName;
-                    $formUser = $data->ToUserName;
-                    if($categoty==1){
-                        $template = "<xml>
-                                        <ToUserName><![CDATA[%s]]></ToUserName>
-                                        <FromUserName><![CDATA[%s]]></FromUserName>
-                                        <CreateTime>%s</CreateTime>
-                                        <MsgType><![CDATA[%s]]></MsgType>
-                                        <Content><![CDATA[%s]]></Content>
-                                        </xml>";
-                        $info = sprintf($template,$toUser,$formUser,time(),$content);
-                        return $info;
+                        // 取消关注
+                        if (strtolower($data->Event == 'unsubscribe')) {
+                            // 清除用户信息
+                        }
                     }
                 }
-                */
             } else {
                 return false;
             }
         }
-    
+
     /**
      * 获取access_token
      */
