@@ -34,18 +34,17 @@ class WeiXinController extends Controller
                 if (strtolower($data->Event == "subscribe")) {
                     // 回复用户消息  纯文本格式
                     $toUser = $data->FormUserName;
-                    $formUser = $data->ToUserName;
-                    file_put_contents('logs.log',$formUser.'1');
-                    $msgType = 'text';
+                    $fromUser = $data->ToUserName;
                     $content = '欢迎关注微信公众号';
                     $template = "<xml>
-                                <ToUserName><![CDATA[%s]]></ToUserName>
-                                <FromUserName><![CDATA[%s]]></FromUserName>
-                                <CreateTime>%s</CreateTime>
-                                <MsgType><![CDATA[%s]]></MsgType>
-                                <Content><![CDATA[%s]]></Content>
-                                </xml>";
-                        return sprintf($template, $toUser, $formUser, time(), $msgType, $content);
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
+                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+                    return $info;
                     }
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
