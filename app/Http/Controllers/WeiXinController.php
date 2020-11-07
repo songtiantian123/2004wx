@@ -46,6 +46,7 @@ class WeiXinController extends Controller
                                     <Content><![CDATA[%s]]></Content>
                                     </xml>";
                         $info = sprintf($template, $toUser, $formUser, time(), $msgType, $content);
+                        echo $info;
                         return $info;
                     }
                     // 取消关注
