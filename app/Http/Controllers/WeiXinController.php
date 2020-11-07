@@ -68,7 +68,7 @@ class WeiXinController extends Controller
                                     </xml>";
                   $info = sprintf($template,$toUser,$formUser,time(),$msgType,$content);
                   return $info;
-              }// <MsgId>22973168672632691</MsgId>
+              }
               // 取消关注
               if(strtolower($data->Event=='unsubscribe')){
                   // 清除用户信息
