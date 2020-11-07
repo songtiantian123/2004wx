@@ -75,7 +75,7 @@ class WeiXinController extends Controller
               }
           }
         }else{
-            echo '';
+           return false;
         }
     }
     /**
