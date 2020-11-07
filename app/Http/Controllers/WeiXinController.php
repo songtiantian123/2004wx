@@ -117,7 +117,7 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-            echo '';
+//            echo '';
         } else {
             return false;
         }
