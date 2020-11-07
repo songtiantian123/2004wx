@@ -61,16 +61,16 @@ class WeiXinController extends Controller
                   $msgType = 'text';
                   $content = '欢迎关注微信公众号';
                   $template = "<xml>
-                                    <ToUserName><![CDATA[gh_6e8f9e020d60]]></ToUserName>
-                                    <FromUserName><![CDATA[obhsv6YWuyDAfIWqGsnCyxIQ6h-g]]></FromUserName>
-                                    <CreateTime>1604657195</CreateTime>
-                                    <MsgType><![CDATA[text]]></MsgType>
-                                    <Content><![CDATA[1]]></Content>
-                                    <MsgId>22973168672632691</MsgId>
+                                    <ToUserName><![CDATA[%s]]></ToUserName>
+                                    <FromUserName><![CDATA[%s]]></FromUserName>
+                                    <CreateTime>%s</CreateTime>
+                                    <MsgType><![CDATA[%s]]></MsgType>
+                                    <Content><![CDATA[%s]]></Content>
+                                   
                                     </xml>";
                   $info = sprintf($template,$toUser,$formUser,time(),$msgType,$content);
                   return $info;
-              }
+              }// <MsgId>22973168672632691</MsgId>
               // 取消关注
               if(strtolower($data->Event=='unsubscribe')){
                   // 清除用户信息
