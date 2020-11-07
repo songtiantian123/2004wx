@@ -52,6 +52,71 @@ class WeiXinController extends Controller
                         // 清除用户信息
                     }
                 }
+            // 被动回复用户文本
+            if(strtolower($data->MsgType)=='text'){
+                $toUser = $data->FromUserName;
+                $fromUser = $data->ToUserName;
+                switch ($data->Content){
+                    case '签到';
+                        $content = '签到成功';
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    case '时间';
+                        $content = data('Y-m-d H:i:s',time());
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    case '女';
+                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ"; // 目前 id 是死的
+                        $result = $this->picture($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    case '语音';
+                        $content  = "CIYQ3MwBK3gXJVGVzRgsMgdy1rBjbJ11Krv41r37uQIbKfDmfI6WchQ-ByA0ITVO";
+                        $result = $this->voice($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    case '视频';
+                        $title = '视频测试';
+                        $description = '暂无视频描述';
+                        $content  = "ANjOfBAbJi8U5VMB5Fep2e4CuT4cXD88JlEnEAAMCh1uQZyBLuDy8R67jYUwhLkp";
+                        $result = $this->video($toUser,$fromUser,$content,$title,$description);
+                        return $result;
+                        break;
+                    case '音乐';
+                        $title = '音乐测试';
+                        $description = '暂无音乐描述';
+                        $musicurl = 'https://wx.wyxxx.xyz/%E5%B0%8F.mp3';
+                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
+                        $result = $this->music($toUser,$fromUser,$title,$description,$musicurl,$content);
+                        return $result;
+                        break;
+                    case '图文';
+                        $title = '图文测试';
+                        $description = '暂无图文描述';
+                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
+                        $url = 'https://www.baidu.com';
+                        $result = $this->image_text($toUser,$fromUser,$title,$description,$content,$url);
+                        return $result;
+                        break;
+                    case '天气';
+                        $key = 'd570bea572fd4f728f81686371ebbb2b';
+                        $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=\".$key.\"&gzip=n\";";
+                        $api = file_get_contents($uri);
+                        $api = json_decode($api,true);
+                        $content = "天气状态：".$api['row']['text'].'
+                        风向：'.$api['now']['windDir'];
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                    default:
+                        $content = "我表示听不懂";
+                        $result = $this->text($toUser,$fromUser,$content);
+                        return $result;
+                        break;
+                }
+            }
             echo '';
         } else {
             return false;
