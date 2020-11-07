@@ -45,8 +45,14 @@ class WeiXinController extends Controller
                                     <MsgType><![CDATA[%s]]></MsgType>
                                     <Content><![CDATA[%s]]></Content>
                                     </xml>";
-                        $info = sprintf($template, $toUser, $formUser, time(), $msgType, $content);
-                        echo $info;
+                        switch ($msgType){
+                            case 'text';
+                            $msgType = "text";
+                            $content = "发送文本信息";
+                            $info = sprintf($template, $toUser, $formUser, time(), $msgType, $content);
+                            echo $info;
+                            break;
+                        }
                         return $info;
                     }
                     // 取消关注
