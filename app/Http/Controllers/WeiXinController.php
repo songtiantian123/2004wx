@@ -102,7 +102,7 @@ class WeiXinController extends Controller
                         break;
                     case '天气':
                         $key = 'd570bea572fd4f728f81686371ebbb2b';
-                        $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=\".$key.\"&gzip=n\";";
+                        $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
                         $api = file_get_contents($uri);
                         $api = json_decode($api,true);
                         $content = "天气状态：".$api['row']['text'].'
