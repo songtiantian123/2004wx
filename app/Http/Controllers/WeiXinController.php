@@ -41,7 +41,7 @@ class WeiXinController extends Controller
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
 
-        if( $tmpStr == $signature ){ //验证通过
+        if( $tmpStr == $signature ) { //验证通过
             // 1 接收数据
             $xml_str = file_get_contents("php://input");
             // 记录日志
@@ -49,31 +49,32 @@ class WeiXinController extends Controller
 //            echo "";
 //            die;
             // 2 把xml文本转换为php的对象或数组
-            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
             // 判断该数据包是否是订阅的事件推送
-            if(strtolower($data->MsgType) == "event"){
-              // 关注
-              if(strtolower($data->Event == "subscribe")){
-                  // 回复用户消息  纯文本格式
-                  $toUser = $data->FormUserName;
-                  $formUser = $data->ToUserName;
-                  $msgType = 'text';
-                  $content = '欢迎关注微信公众号';
-                  $template = "<xml>
+            if (strtolower($data->MsgType) == "event") {
+                // 关注
+                if (strtolower($data->Event == "subscribe")) {
+                    // 回复用户消息  纯文本格式
+                    $toUser = $data->FormUserName;
+                    $formUser = $data->ToUserName;
+                    $msgType = 'text';
+                    $content = '欢迎关注微信公众号';
+                    $template = "<xml>
                                     <ToUserName><![CDATA[%s]]></ToUserName>
                                     <FromUserName><![CDATA[%s]]></FromUserName>
                                     <CreateTime>%s</CreateTime>
                                     <MsgType><![CDATA[%s]]></MsgType>
                                     <Content><![CDATA[%s]]></Content>
                                     </xml>";
-                  $info = sprintf($template,$toUser,$formUser,time(),$msgType,$content);
-                  return $info;
-              }
-              // 取消关注
-              if(strtolower($data->Event=='unsubscribe')){
-                  // 清除用户信息
-              }
-          }
+                    $info = sprintf($template, $toUser, $formUser, time(), $msgType, $content);
+                    return $info;
+                }
+                // 取消关注
+                if (strtolower($data->Event == 'unsubscribe')) {
+                    // 清除用户信息
+                }
+            }
+
             /*
             // 天气
             if(strtolower($data->MsgType)=="text"){
