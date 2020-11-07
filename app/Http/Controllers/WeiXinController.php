@@ -45,7 +45,7 @@ class WeiXinController extends Controller
                                 <MsgType><![CDATA[%s]]></MsgType>
                                 <Content><![CDATA[%s]]></Content>
                                 </xml>";
-                        echo sprintf($template, $toUser, $formUser, time(), $msgType, $content);
+                        echo sprintf($template, $toUser, $formUser, time(), $msgType, $content);die;
                     }
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
