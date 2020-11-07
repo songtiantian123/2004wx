@@ -45,6 +45,13 @@ class WeiXinController extends Controller
                                     <MsgType><![CDATA[%s]]></MsgType>
                                     <Content><![CDATA[%s]]></Content>
                                     </xml>";
+                        switch ($msgType){
+                            case '公众号';
+                            $content = "提供一流的技术支持";
+                            break;
+                            case 'PHP';
+                            $content = "最美的语言";
+                        }
                             $info = sprintf($template, $toUser, $formUser, time(), $msgType, $content);
                             return $info;
                         }
