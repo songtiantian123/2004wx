@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 class WeiXinController extends Controller
 {
-    public function checkSignature(Request $request)
+    public function wxEvent(Request $request)
     {
         $echostr = $request->echostr;
         $signature = $_GET["signature"];
@@ -53,7 +53,6 @@ class WeiXinController extends Controller
                         // 清除用户信息
                     }
                 }
-
                 /*
                 // 天气
                 if(strtolower($data->MsgType)=="text"){
