@@ -52,6 +52,7 @@ class WeiXinController extends Controller
                         // 清除用户信息
                     }
                 }
+            echo '';
         } else {
             return false;
         }
