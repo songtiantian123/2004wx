@@ -23,7 +23,7 @@ class WeiXinController extends Controller
             // 1 接收数据
             $xml_str = file_get_contents("php://input");
             // 记录日志
-//            file_put_contents('wx_event.log',$xml_str);
+            file_put_contents('wx_event.log',$xml_str);
 //            echo "";
 //            die;
             // 2 把xml文本转换为php的对象或数组
