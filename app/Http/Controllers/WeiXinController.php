@@ -91,8 +91,7 @@ class WeiXinController extends Controller
                 return false;
             }
         }
-    }
-
+    
     /**
      * 获取access_token
      */
