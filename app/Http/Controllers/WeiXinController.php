@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 class WeiXinController extends Controller
 {
-    public function wxEvent(Request $request)
-    {
+    public function wxEvent(Request $request){
         $echostr = $request->echostr;
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
@@ -121,7 +120,19 @@ class WeiXinController extends Controller
         } else {
             return false;
         }
-        }
+    }
+    // 回复文本消息
+    private function text($toUser,$fromUser,$content){
+        $template = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+        return $info;
+    }
 
     /**
      * 获取access_token
