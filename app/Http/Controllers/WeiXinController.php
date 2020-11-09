@@ -40,14 +40,14 @@ class WeiXinController extends Controller
                     $token = $this->getAccessToken();
                     $uri = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
                     file_put_contents('logs.log',$uri);
-                    $uri_json = file_get_contents($uri);
-                    $uri_json = json_decode($uri_json,true);
+                    $user = file_get_contents($uri);
+                    $user = json_decode($user,true);
                     $userInfo = [
-                        'nickname'=>$uri_json['nickname'],
-                        'sex'=>$uri_json['sex'],
-                        'city'=>$uri_json['city'],
-                        'headimgurl'=>$uri_json['headimgurl'],
-                        'subscribe_time'=>$uri_json['subscribe_time'],
+                        'nickname'=>$user['nickname'],
+                        'sex'=>$user['sex'],
+                        'city'=>$user['city'],
+//                        'headimgurl'=>$user['headimgurl'],
+                        'subscribe_time'=>$user['subscribe_time'],
                     ];
                     UserModel::insert($userInfo);
                     $template = "<xml>
