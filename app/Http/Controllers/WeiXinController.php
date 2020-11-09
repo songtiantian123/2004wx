@@ -66,7 +66,7 @@ class WeiXinController extends Controller
                         $result = $this->text($toUser,$fromUser,$content);
                         return $result;
                         break;
-                    case '女':
+                    case '照片':
                         $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ"; // 目前 id 是死的
                         $result = $this->picture($toUser,$fromUser,$content);
                         return $result;
@@ -104,7 +104,7 @@ class WeiXinController extends Controller
                         $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
                         $api = file_get_contents($uri);
                         $api = json_decode($api,true);
-                        $content = "天气状态：".$api['row']['text'].'
+                        $content = "天气状态：".$api['now']['text'].'
                         风向：'.$api['now']['windDir'];
                         $result = $this->text($toUser,$fromUser,$content);
                         return $result;
@@ -121,7 +121,7 @@ class WeiXinController extends Controller
             return false;
         }
     }
-    // 回复文本消息
+    // 1 回复文本消息
     private function text($toUser,$fromUser,$content){
         $template = "<xml>
                             <ToUserName><![CDATA[%s]]></ToUserName>
@@ -131,6 +131,88 @@ class WeiXinController extends Controller
                             <Content><![CDATA[%s]]></Content>
                             </xml>";
         $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+        return $info;
+    }
+    // 2 回复图片消息
+    private function picture($toUser,$fromUser,$content){
+        $template = "<xml>
+                          <ToUserName><![CDATA[%s]]></ToUserName>
+                          <FromUserName><![CDATA[%s]]></FromUserName>
+                          <CreateTime>%s</CreateTime>
+                          <MsgType><![CDATA[%s]]></MsgType>
+                          <Image>
+                            <MediaId><![CDATA[%s]]></MediaId>
+                          </Image>
+                        </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'image', $content);
+        return $info;
+    }
+    // 3 回复语音消息
+    private function voice($toUser,$fromUser,$content){
+        $template = "<xml>
+                          <ToUserName><![CDATA[%s]]></ToUserName>
+                          <FromUserName><![CDATA[%s]]></FromUserName>
+                          <CreateTime>%s</CreateTime>
+                          <MsgType><![CDATA[%s]]></MsgType>
+                          <Voice>
+                            <MediaId><![CDATA[%s]]></MediaId>
+                          </Voice>
+                        </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'voice', $content);
+        return $info;
+    }
+    // 4 回复视频消息
+    private function video($toUser,$fromUser,$content,$title,$description){
+        $template = "<xml>
+                              <ToUserName><![CDATA[%s]]></ToUserName>
+                              <FromUserName><![CDATA[%s]]></FromUserName>
+                              <CreateTime><![CDATA[%s]]></CreateTime>
+                              <MsgType><![CDATA[%s]]></MsgType>
+                              <Video>
+                                <MediaId><![CDATA[%s]]></MediaId>
+                                <Title><![CDATA[%s]]></Title>
+                                <Description><![CDATA[%s]]></Description>
+                              </Video>
+                            </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'video', $content,$title,$description);
+        return $info;
+    }
+    // 5 回复音乐消息
+    private function music($toUser,$fromUser,$title,$description,$content,$musicurl){
+        $template = "<xml>
+                  <ToUserName><![CDATA[%s]]></ToUserName>
+                  <FromUserName><![CDATA[%s]]></FromUserName>
+                  <CreateTime><![CDATA[%s]]></CreateTime>
+                  <MsgType><![CDATA[%s]]></MsgType>
+                  <Music>
+                    <Title><![CDATA[%s]]></Title>
+                    <Description><![CDATA[%s]]></Description>
+                    <MusicUrl><![CDATA[%s]]></MusicUrl>
+                    <HQMusicUrl><![CDATA[%s]]></HQMusicUrl>
+                    <ThumbMediaId><![CDATA[%s]]></ThumbMediaId>
+                  </Music>
+                </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'music', $title,$description,$musicurl,$musicurl,$content);
+        return $info;
+    }
+    // 6 回复图文消息
+    private function image_text($toUser,$fromUser,$title,$description,$content,$url){
+        $template = "<xml>
+                              <ToUserName><![CDATA[%s]]></ToUserName>
+                              <FromUserName><![CDATA[%s]]></FromUserName>
+                              <CreateTime>%s</CreateTime>
+                              <MsgType><![CDATA[%s]]></MsgType>
+                              <ArticleCount><![CDATA[%s]]></ArticleCount>
+                              <Articles>
+                                <item>
+                                  <Title><![CDATA[%s]]></Title>
+                                  <Description><![CDATA[%s]]></Description>
+                                  <PicUrl><![CDATA[%s]]></PicUrl>
+                                  <Url><![CDATA[%s]]></Url>
+                                </item>
+                              </Articles>
+                            </xml>";
+        $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
         return $info;
     }
 
