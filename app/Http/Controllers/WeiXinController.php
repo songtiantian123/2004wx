@@ -42,17 +42,23 @@ class WeiXinController extends Controller
                     file_put_contents('logs.log',$url);
                     $user = file_get_contents($url);
                     $user = json_decode($user,true);
-                    $userInfo = [
-                        'nickname'=>$user['nickname'],
-                        'openid'=>$user['openid'],
-                        'sex'=>$user['sex'],
-                        'city'=>$user['city'],
-                        'province'=>$user['province'],
-                        'country'=>$user['country'],
-//                        'headimgurl'=>$user['headimgurl'],
-                        'subscribe_time'=>$user['subscribe_time'],
-                    ];
-                    UserModel::insert($userInfo);
+                    $subscribe = UserModel::where('openid',$user['openid'])->first();
+                    if(!empty($signature)){
+                        $content = '欢迎回来';
+                    }else{
+                        $userInfo = [
+                            'nickname'=>$user['nickname'],
+                            'openid'=>$user['openid'],
+                            'sex'=>$user['sex'],
+                            'city'=>$user['city'],
+                            'province'=>$user['province'],
+                            'country'=>$user['country'],
+                            'headimgurl'=>$user['headimgurl'],
+                            'subscribe_time'=>$user['subscribe_time'],
+                        ];
+                        UserModel::insert($userInfo);
+                    }
+
                     // 发送消息
                     $result = $this->text($toUser,$fromUser,$content);
                     return $result;
