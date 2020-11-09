@@ -250,6 +250,8 @@ class WeiXinController extends Controller
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WX_APPID') . "&secret=" . env('WX_APPSECRET') . "";
             $response = file_get_contents($url);
             $data = json_decode($response, true);
+            $value = $data->getAccessToken;
+            $time = $data->expires_in;
             $token = $data['access_token'];
             // 保存至redis中 时间未3600
             Redis::set($key, $token);
