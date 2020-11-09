@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use App\Model\UserModel;
 class WeiXinController extends Controller
 {
     public function wxEvent(Request $request){
@@ -35,6 +36,20 @@ class WeiXinController extends Controller
                     $toUser = $data->FromUserName;
                     $fromUser = $data->ToUserName;
                     $content = '欢迎关注微信公众号1';
+                    // 获取用户信息
+                    $token = $this->getAccessToken();
+                    $uri = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
+                    file_put_contents('laravel-access.log',$uri);
+                    $uri_json = file_get_contents($uri);
+                    $uri_json = json_decode($uri_json,true);
+                    $userInfo = [
+                        'nickname'=>$uri_json['nickname'],
+                        'sex'=>$uri_json['sex'],
+                        'city'=>$uri_json['city'],
+                        'headimgurl'=>$uri_json['headimgurl'],
+                        'subscribe_time'=>$uri_json['subscribe_time'],
+                    ];
+                    UserModel::insert($userInfo);
                     $template = "<xml>
                             <ToUserName><![CDATA[%s]]></ToUserName>
                             <FromUserName><![CDATA[%s]]></FromUserName>
