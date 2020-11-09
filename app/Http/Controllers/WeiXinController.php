@@ -146,26 +146,26 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-            // 被动回复用户文本
-            if(strtolower($data->MsgType)=='image'){
-                $toUser = $data->FromUserName;
-                $fromUser = $data->ToUserName;
-                $media = MediaModel::where('media_url',$data->PicUrl)->first();
-                if(empty($media)){
-                    $data = [
-                        'media_url'=>$data->PicUrl,
-                        'media_type'=>'image',
-                        'add_time'=>time(),
-                        'openid'=>$data->FromUserName,
-                    ];
-                    MediaModel::insert($data);
-                    $content = '记录素材库中';
-                }else{
-                    $content = '此素材已存在';
-                }
-                $result = $this->text($toUser,$fromUser,$content);
-                return $result;
-            }
+//            // 被动回复用户文本
+//            if(strtolower($data->MsgType)=='image'){
+//                $toUser = $data->FromUserName;
+//                $fromUser = $data->ToUserName;
+//                $media = MediaModel::where('media_url',$data->PicUrl)->first();
+//                if(empty($media)){
+//                    $data = [
+//                        'media_url'=>$data->PicUrl,
+//                        'media_type'=>'image',
+//                        'add_time'=>time(),
+//                        'openid'=>$data->FromUserName,
+//                    ];
+//                    MediaModel::insert($data);
+//                    $content = '记录素材库中';
+//                }else{
+//                    $content = '此素材已存在';
+//                }
+//                $result = $this->text($toUser,$fromUser,$content);
+//                return $result;
+//            }
         } else {
             return false;
         }
