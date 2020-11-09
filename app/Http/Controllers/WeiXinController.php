@@ -148,13 +148,15 @@ class WeiXinController extends Controller
             }
             // 被动回复用户文本
             if(strtolower($data->MsgType)=='image'){
+                $guzzle = $this->guzzle2();
                 $toUser = $data->FromUserName;
                 $fromUser = $data->ToUserName;
                 $media = MediaModel::where('media_url',$data->PicUrl)->first();
                 if(empty($media)){
                     $data = [
+                        'media_id'=>$guzzle['media_id'],
                         'media_url'=>$data->PicUrl,
-                        'media_type'=>'image',
+                        'media_type'=>$guzzle['image'],
                         'add_time'=>time(),
                         'openid'=>$data->FromUserName,
                     ];
@@ -163,7 +165,7 @@ class WeiXinController extends Controller
                 }else{
                     $content = '此素材已存在';
                 }
-                $result = $this->picture($toUser,$fromUser,$content);
+                $result = $this->text($toUser,$fromUser,$content);
                 return $result;
             }
         } else {
