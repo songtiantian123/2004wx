@@ -163,7 +163,7 @@ class WeiXinController extends Controller
                 }else{
                     $content = '此素材已存在';
                 }
-                $result = $this->text($toUser,$fromUser,$content);
+                $result = $this->picture($toUser,$fromUser,$content);
                 return $result;
             }
         } else {
@@ -264,7 +264,6 @@ class WeiXinController extends Controller
         $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
         return $info;
     }
-
     // 新增临时素材
     public function media_insert(Request $request){
         // 类型
