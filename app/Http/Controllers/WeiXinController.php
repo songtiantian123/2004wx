@@ -46,7 +46,7 @@ class WeiXinController extends Controller
                     $user = file_get_contents($url);
                     $user = json_decode($user,true);
                     $subscribe = UserModel::where('openid',$user['openid'])->first();
-                    if(!empty($signature)){
+                    if(!empty($subscribe)){
                         $content = '欢迎回来';
                     }else{
                         $userInfo = [
