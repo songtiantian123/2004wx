@@ -50,16 +50,18 @@ class WeiXinController extends Controller
                         'subscribe_time'=>$uri_json['subscribe_time'],
                     ];
                     UserModel::insert($userInfo);
-                    $template = "<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Content><![CDATA[%s]]></Content>
-                            </xml>";
-                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
-                    echo $info;
-                    return $info;
+                    $result = $this->text($toUser,$fromUser,$content);
+                    return $result;
+//                    $template = "<xml>
+//                            <ToUserName><![CDATA[%s]]></ToUserName>
+//                            <FromUserName><![CDATA[%s]]></FromUserName>
+//                            <CreateTime>%s</CreateTime>
+//                            <MsgType><![CDATA[%s]]></MsgType>
+//                            <Content><![CDATA[%s]]></Content>
+//                            </xml>";
+//                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+//                    echo $info;
+//                    return $info;
                     }
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
