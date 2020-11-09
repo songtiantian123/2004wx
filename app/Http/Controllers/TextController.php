@@ -29,6 +29,6 @@ class TextController extends Controller
     }
     /** 测试3*/
     public function text3(){
-        print_r($_POST);
+        echo '<pre>';print_r($_POST);echo '</pre>';
     }
 }
