@@ -27,12 +27,10 @@ Route::get('/text2','TextController@text2');// 测试2
 Route::post('/text3','TextController@text3');// 测试3
 
 
-// 微信
-Route::prefix('/wx')->group(function(){
-    //Route::post('/wx','WeiXinController@checkSignature');// 微信接口
-    Route::match(['get','post'],'/','WeiXinController@wxEvent');// 接收事件推送
-    Route::get('/token','WeiXinController@getAccessToken');// 获取access_token
-});
+
+//Route::post('/wx','WeiXinController@checkSignature');// 微信接口
+Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
+Route::get('/token','WeiXinController@getAccessToken');// 获取access_token
 
 // text 路由分组
 Route::prefix('/text')->group(function(){
