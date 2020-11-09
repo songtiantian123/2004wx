@@ -62,7 +62,7 @@ class WeiXinController extends Controller
                         return $result;
                         break;
                     case '时间':
-                        $content = data('Y-m-d H:i:s',time());
+                        $content = date('Y-m-d H:i:s',time());
                         $result = $this->text($toUser,$fromUser,$content);
                         return $result;
                         break;
