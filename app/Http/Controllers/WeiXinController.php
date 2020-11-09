@@ -44,9 +44,12 @@ class WeiXinController extends Controller
                     $user = json_decode($user,true);
                     $userInfo = [
                         'nickname'=>$user['nickname'],
+                        'openid'=>$user['openid'],
                         'sex'=>$user['sex'],
                         'city'=>$user['city'],
-                        'headimgurl'=>$user['headimgurl'],
+                        'province'=>$user['province'],
+                        'country'=>$user['country'],
+//                        'headimgurl'=>$user['headimgurl'],
                         'subscribe_time'=>$user['subscribe_time'],
                     ];
                     UserModel::insert($userInfo);
