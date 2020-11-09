@@ -255,7 +255,7 @@ class WeiXinController extends Controller
             Redis::set($key, $token);
             Redis::expire($key, 3600);
         }
-        return 'access_token' . $token;
+        return $token;
     }
 }
 
