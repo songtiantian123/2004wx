@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use App\Model\UserModel;
 use GuzzleHttp\Client;
+use App\Model\MediaModel;
 class WeiXinController extends Controller
 {
     // 微信接口
@@ -145,7 +146,26 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-//            echo '';
+            // 被动回复用户文本
+            if(strtolower($data->MsgType)=='image'){
+                $toUser = $data->FromUserName;
+                $fromUser = $data->ToUserName;
+                $media = MediaModel::where('media_url',$data->PicUrl)->first();
+                if(empty($media)){
+                    $data = [
+                        'media_url'=>$data->PicUrl,
+                        'media_type'=>'image',
+                        'add_time'=>time(),
+                        'openid'=>$data->FromUserName,
+                    ];
+                    MediaModel::insert($data);
+                    $content = '记录素材库中';
+                }else{
+                    $content = '此素材已存在';
+                }
+                $result = $this->text($toUser,$fromUser,$content);
+                return $result;
+            }
         } else {
             return false;
         }
@@ -274,7 +294,7 @@ class WeiXinController extends Controller
     }
 
     /**
-     * 上传素材
+     * 上传素材 post
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function guzzle2(){
