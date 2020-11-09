@@ -146,26 +146,26 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-//            // 被动回复用户文本
-//            if(strtolower($data->MsgType)=='image'){
-//                $toUser = $data->FromUserName;
-//                $fromUser = $data->ToUserName;
-//                $media = MediaModel::where('media_url',$data->PicUrl)->first();
-//                if(empty($media)){
-//                    $data = [
-//                        'media_url'=>$data->PicUrl,
-//                        'media_type'=>'image',
-//                        'add_time'=>time(),
-//                        'openid'=>$data->FromUserName,
-//                    ];
-//                    MediaModel::insert($data);
-//                    $content = '记录素材库中';
-//                }else{
-//                    $content = '此素材已存在';
-//                }
-//                $result = $this->text($toUser,$fromUser,$content);
-//                return $result;
-//            }
+            // 被动回复用户文本
+            if(strtolower($data->MsgType)=='image'){
+                $toUser = $data->FromUserName;
+                $fromUser = $data->ToUserName;
+                $media = MediaModel::where('media_url',$data->PicUrl)->first();
+                if(empty($media)){
+                    $data = [
+                        'media_url'=>$data->PicUrl,
+                        'media_type'=>'image',
+                        'add_time'=>time(),
+                        'openid'=>$data->FromUserName,
+                    ];
+                    MediaModel::insert($data);
+                    $content = '记录素材库中';
+                }else{
+                    $content = '此素材已存在';
+                }
+                $result = $this->text($toUser,$fromUser,$content);
+                return $result;
+            }
         } else {
             return false;
         }
@@ -265,6 +265,35 @@ class WeiXinController extends Controller
         return $info;
     }
 
+    // 新增临时素材
+    public function media_insert(Request $request){
+        // 类型
+        $type = $request->type;
+        // 获取access_token
+        $token = $this->getAccessToken();
+        // 接口
+        $api = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$token."&type=".$type;
+        // 素材
+        $fileurl = $request->fileurl;
+        $this->media_add($api,$fileurl);
+    }
+    // 调用接口临时素材
+    private function media_add($api,$fileurl){
+        $curl = curl_init();
+        curl_setopt($curl,CURLOPT_SAFE_UPLOAD,true);
+
+        $data = ['media'    => new \CURLFile($fileurl)];
+
+        curl_setopt($curl,CURLOPT_URL,$api);
+        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER,false);
+        // curl_setopt($curl, CURLOPT_SSL_VERIFYHOST,false);
+        curl_setopt($curl,CURLOPT_POST,1);
+        curl_setopt($curl,CURLOPT_POSTFIELDS,$data);
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($curl,CURLOPT_USERAGENT,"TEST");
+        $result = curl_exec($curl);
+        print_r(json_decode($result,true));
+    }
     /**
      * guzzle get请求
      * 获取access_token
