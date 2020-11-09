@@ -23,4 +23,12 @@ class TextController extends Controller
     public function text1(){
         echo '测试1';
     }
+    /** 测试2*/
+    public function text2(){
+        print_r($_GET);
+    }
+    /** 测试3*/
+    public function text3(){
+        print_r($_POST);
+    }
 }

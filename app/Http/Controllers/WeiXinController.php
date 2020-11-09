@@ -38,28 +38,31 @@ class WeiXinController extends Controller
                     $content = '欢迎关注微信公众号1';
                     // 获取用户信息
                     $token = $this->getAccessToken();
-                    $uri = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    file_put_contents('logs.log',$uri);
-                    $user = file_get_contents($uri);
+                    $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
+                    file_put_contents('logs.log',$url);
+                    $user = file_get_contents($url);
                     $user = json_decode($user,true);
                     $userInfo = [
                         'nickname'=>$user['nickname'],
                         'sex'=>$user['sex'],
                         'city'=>$user['city'],
-//                        'headimgurl'=>$user['headimgurl'],
+                        'headimgurl'=>$user['headimgurl'],
                         'subscribe_time'=>$user['subscribe_time'],
                     ];
                     UserModel::insert($userInfo);
-                    $template = "<xml>
-                            <ToUserName><![CDATA[%s]]></ToUserName>
-                            <FromUserName><![CDATA[%s]]></FromUserName>
-                            <CreateTime>%s</CreateTime>
-                            <MsgType><![CDATA[%s]]></MsgType>
-                            <Content><![CDATA[%s]]></Content>
-                            </xml>";
-                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
-                    echo $info;
-                    return $info;
+                    // 发送消息
+                    $result = $this->text($toUser,$fromUser,$content);
+                    return $result;
+//                    $template = "<xml>
+//                            <ToUserName><![CDATA[%s]]></ToUserName>
+//                            <FromUserName><![CDATA[%s]]></FromUserName>
+//                            <CreateTime>%s</CreateTime>
+//                            <MsgType><![CDATA[%s]]></MsgType>
+//                            <Content><![CDATA[%s]]></Content>
+//                            </xml>";
+//                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+//                    echo $info;
+//                    return $info;
                     }
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
