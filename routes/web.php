@@ -30,7 +30,7 @@ Route::post('/text3','TextController@text3');// 测试3
 // 微信
 Route::prefix('/wx')->group(function(){
     //Route::post('/wx','WeiXinController@checkSignature');// 微信接口
-    Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
+    Route::match(['get','post'],'/','WeiXinController@wxEvent');// 接收事件推送
     Route::get('/token','WeiXinController@getAccessToken');// 获取access_token
 });
 
