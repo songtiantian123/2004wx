@@ -39,7 +39,7 @@ class WeiXinController extends Controller
                     // 获取用户信息
                     $token = $this->getAccessToken();
                     $uri = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    file_put_contents('laravel-access.log',$uri);
+                    file_put_contents('logs.log',$uri);
                     $uri_json = file_get_contents($uri);
                     $uri_json = json_decode($uri_json,true);
                     $userInfo = [
@@ -50,18 +50,16 @@ class WeiXinController extends Controller
                         'subscribe_time'=>$uri_json['subscribe_time'],
                     ];
                     UserModel::insert($userInfo);
-                    $result = $this->text($toUser,$fromUser,$content);
-                    return $result;
-//                    $template = "<xml>
-//                            <ToUserName><![CDATA[%s]]></ToUserName>
-//                            <FromUserName><![CDATA[%s]]></FromUserName>
-//                            <CreateTime>%s</CreateTime>
-//                            <MsgType><![CDATA[%s]]></MsgType>
-//                            <Content><![CDATA[%s]]></Content>
-//                            </xml>";
-//                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
-//                    echo $info;
-//                    return $info;
+                    $template = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[%s]]></MsgType>
+                            <Content><![CDATA[%s]]></Content>
+                            </xml>";
+                    $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
+                    echo $info;
+                    return $info;
                     }
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
