@@ -26,6 +26,16 @@ Route::get('/text1','TextController@text1');// 测试1
 Route::get('/text2','TextController@text2');// 测试2
 Route::post('/text3','TextController@text3');// 测试3
 
-//Route::post('/wx','WeiXinController@checkSignature');// 微信接口
-Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
-Route::get('/wx/token','WeiXinController@getAccessToken');// 获取access_token
+
+// 微信
+Route::prefix('/wx')->group(function(){
+    //Route::post('/wx','WeiXinController@checkSignature');// 微信接口
+    Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
+    Route::get('/token','WeiXinController@getAccessToken');// 获取access_token
+});
+
+// text 路由分组
+Route::prefix('/text')->group(function(){
+    Route::get('/guzzle1','TextController@guzzle1');// guzzle get请求
+    Route::get('/guzzle2','WeiXinController@guzzle2');// guzzle post请求
+});

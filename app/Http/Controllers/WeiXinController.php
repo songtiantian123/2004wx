@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use App\Model\UserModel;
+use GuzzleHttp\Client;
 class WeiXinController extends Controller
 {
+    // 微信接口
     public function wxEvent(Request $request){
         $echostr = $request->echostr;
         $signature = $_GET["signature"];
@@ -244,27 +246,54 @@ class WeiXinController extends Controller
     }
 
     /**
+     * guzzle get请求
      * 获取access_token
      */
     public function getAccessToken()
     {
+//        echo __METHOD__;die;
         $key = 'wx:access_token';
         // 检测是否有token
         $token = Redis::get($key);
         if ($token) {
-            echo '有缓存';
-            echo '</br>';
+//            echo '有缓存';
+//            echo '</br>';
         } else {
-            echo '无缓存';
+//            echo '无缓存';
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WX_APPID') . "&secret=" . env('WX_APPSECRET') . "";
-            $response = file_get_contents($url);
-            $data = json_decode($response, true);
+            $client = new Client();// 实例化 客户端
+            $response = $client->request('GET',$url,['verify'=>false]);// 发起请求闭关响应
+            $json_str = $response->getBody(); // 服务器的响应数据
+            $data = json_decode($json_str, true);
             $token = $data['access_token'];
             // 保存至redis中 时间未3600
             Redis::set($key, $token);
             Redis::expire($key, 3600);
         }
         return $token;
+    }
+
+    /**
+     * 上传素材
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function guzzle2(){
+        $access_token = $this->getAccessToken();
+//        echo $access_token;die;
+        $type = 'image';
+        $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$access_token."&type=".$type;
+        $client = new Client();// 实例化 客户端
+        $response = $client->request('POST',$url,[
+            'verify'=>false,
+            'multipart'=>[
+                [
+                    'name'=>'media',
+                    'contents'=>fopen('IMG_0156.JPG','r')
+                ],// 上传的文件路径
+            ],
+        ]);// 发起请求闭关响应
+        $data = $response->getBody();
+        echo $data;
     }
 }
 
