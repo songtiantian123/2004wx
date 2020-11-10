@@ -136,7 +136,7 @@ class WeiXinController extends Controller
                     case '图文':
                         $title = '图文测试';
                         $description = '暂无图文描述';
-                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
+                        $content  = "IMG_0156.JPG";
                         $url = 'https://www.baidu.com';
                         $result = $this->image_text($toUser,$fromUser,$title,$description,$content,$url);
                         return $result;
@@ -173,7 +173,8 @@ class WeiXinController extends Controller
                 }else{
                     $content = '素材库已存在';
                 }
-                $result = $this->image_text($toUser,$fromUser,$content);
+                // 发送消息
+                $result = $this->text($toUser,$fromUser,$content);
                 return $result;
             }
         } else {
