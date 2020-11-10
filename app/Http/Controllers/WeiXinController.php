@@ -10,9 +10,8 @@ use GuzzleHttp\Client;
 use App\Model\MediaModel;
 class WeiXinController extends Controller
 {
-    // 微信接口
-    public function wxEvent(Request $request){
-        $echostr = $request->echostr;
+    // 验证请求是否来自微信
+    private function check(){
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
@@ -20,8 +19,33 @@ class WeiXinController extends Controller
         $token = env('WX_TOKEN');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
-        $tmpStr = implode($tmpArr);
-        $tmpStr = sha1($tmpStr);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+
+        if( $tmpStr == $signature ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    // 处理推送事件
+    public function wxEvent(Request $request){
+        // 验签
+        if($this->check()==false){
+            // TODO 验签不通过
+            exit;
+        }
+
+//        $echostr = $request->echostr;
+//        $signature = $_GET["signature"];
+//        $timestamp = $_GET["timestamp"];
+//        $nonce = $_GET["nonce"];
+//
+//        $token = env('WX_TOKEN');
+//        $tmpArr = array($token, $timestamp, $nonce);
+//        sort($tmpArr, SORT_STRING);
+//        $tmpStr = implode($tmpArr);
+//        $tmpStr = sha1($tmpStr);
 
 
         // 获取到微信推送过来的post数据
@@ -159,7 +183,7 @@ class WeiXinController extends Controller
                 }
             }
             // 被动回复用户文本
-            if(strtolower($data->MsgType)=='text'){
+            if(strtolower($data->MsgType)=='image'){
                 $media = MediaModel::where('media_url',$data->PicUrl)->first();
                 if(empty($media)){
                     $res = [
