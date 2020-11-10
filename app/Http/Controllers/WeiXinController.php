@@ -153,7 +153,9 @@ class WeiXinController extends Controller
                         return $result;
                         break;
                     default:
-                        $content = "我表示听不懂";
+                        $url = env('APP_URL');
+                        $wether = file_get_contents($url.'/wx/turing?info='.$data->Content);
+                        $content = $wether;
                         $result = $this->text($toUser,$fromUser,$content);
                         return $result;
                         break;
