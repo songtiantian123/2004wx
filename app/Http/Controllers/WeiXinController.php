@@ -216,25 +216,25 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-            // 将素材存入数据库
-//            if(strtolower($data->MsgType)=='image'){
-//                $media = MediaModel::where('media_url',$data->PicUrl)->first();
-//                if(empty($media)){
-//                    $res = [
-//                        'media_url' =>$data->PicUrl,
-//                        'media_type' => 'image',
-//                        'add_time' =>time(),
-//                        'openid' =>$data->FromUserName,
-//                    ];
-//                    MediaModel::insert($res);
-//                    $content = '已记录素材库中';
-//                }else{
-//                    $content = '素材库已存在';
-//                }
-//                // 发送消息
-//                $result = $this->text($toUser,$fromUser,$content);
-//                return $result;
-//            }
+             //将素材存入数据库
+            if(strtolower($data->MsgType)=='image'){
+                $media = MediaModel::where('media_url',$data->PicUrl)->first();
+                if(empty($media)){
+                    $res = [
+                        'media_url' =>$data->PicUrl,
+                        'media_type' => 'image',
+                        'add_time' =>time(),
+                        'openid' =>$data->FromUserName,
+                    ];
+                    MediaModel::insert($res);
+                    $content = '已记录素材库中';
+                }else{
+                    $content = '素材库已存在';
+                }
+                // 发送消息
+                $result = $this->text($toUser,$fromUser,$content);
+                return $result;
+            }
         } else {
             return false;
         }
