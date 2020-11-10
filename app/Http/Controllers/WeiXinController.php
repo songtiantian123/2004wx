@@ -137,7 +137,7 @@ class WeiXinController extends Controller
                         $title = '图文测试';
                         $description = '暂无图文描述';
                         $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
-                        $url = 'D:\wwwroot\2004\wx\public\IMG_0156.JPG';
+                        $url = 'https://www.baidu.com';
                         $result = $this->image_text($toUser,$fromUser,$title,$description,$content,$url);
                         return $result;
                         break;
@@ -159,7 +159,7 @@ class WeiXinController extends Controller
                 }
             }
             // 被动回复用户文本
-            if(strtolower($data->MsgType)=='image'){
+            if(strtolower($data->MsgType)=='text'){
                 $media = MediaModel::where('media_url',$data->PicUrl)->first();
                 if(empty($media)){
                     $res = [
