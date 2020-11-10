@@ -49,7 +49,7 @@ class WeiXinController extends Controller
             $fromUser = $data->ToUserName;
             $token = $this->getAccessToken();
             //将会话记录 入库
-            $media = UserOfficialModel::where('wx_open_id',$data->FormUserName)->first();
+            $media = MediaModel::where('open_id',$data->FormUserName)->first();
             if(!empty($media)){
                 $res = [
                     'add_time' => time(),
