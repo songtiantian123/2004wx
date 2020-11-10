@@ -85,8 +85,6 @@ class WeiXinController extends Controller
                     // 用户点击一级菜单 汇报当前天气信息
                     if($data->Event == 'CLICK'){
                         if($data->EventKey == 'HEBEI_WEATHER'){
-                            $toUser = $data->FromUserName;
-                            $fromUser = $data->ToUserName;
                             $url = env('APP_URL');
                             $callback  = file_get_contents($url.'/wx/turing?info=河北天气');
                             $result = $this->text($toUser,$fromUser,$callback);
@@ -159,6 +157,24 @@ class WeiXinController extends Controller
                         return $result;
                         break;
                 }
+            }
+            // 被动回复用户文本
+            if(strtolower($data->MsgType)=='image'){
+                $media = MediaModel::where('media_url',$data->PicUrl)->first();
+                if(empty($media)){
+                    $res = [
+                        'media_url' =>$data->PicUrl,
+                        'media_type' => 'image',
+                        'add_time' =>time(),
+                        'openid' =>$data->FromUserName,
+                    ];
+                    MediaModel::insert($res);
+                    $content = '已记录素材库中';
+                }else{
+                    $content = '素材库已存在';
+                }
+                $result = $this->image_text($toUser,$fromUser,$content);
+                return $result;
             }
         } else {
             return false;
