@@ -49,7 +49,7 @@ class WeiXinController extends Controller
             $fromUser = $data->ToUserName;
             $token = $this->getAccessToken();
             //将会话记录 入库
-            $media = MediaModel::where('openid',$data->FormUserName)->first();
+            $media = UserOfficialModel::where('openid',$data->FormUserName)->first();
             if(!empty($media)){
                 $res = [
                     'add_time' => time(),
@@ -57,6 +57,7 @@ class WeiXinController extends Controller
                     'media_type' => (string)$data->MsgType,
                     'msg_id' =>(string)$data->MsgId,
                 ];
+                print_r($res);
                 switch ($data->MsgType){
                     case 'text':
                         $data['content'] =(string)$data->Content;// 文本信息
@@ -427,7 +428,7 @@ class WeiXinController extends Controller
             "button"=>[
                 [
                     'type' => 'click',
-                    'name'=> 'wether',
+                    'name'=> 'weather',
                     'key'=> 'HEBEI_WEATHER',
                 ],
                 [

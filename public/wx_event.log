@@ -1,0 +1,6 @@
+$res = [
+                    'add_time' => time(),
+                    'user_id' =>  $media->openid,
+                    'media_type' => (string)$data->MsgType,
+                    'msg_id' =>(string)$data->MsgId,
+                ];

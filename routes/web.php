@@ -32,7 +32,7 @@ Route::post('/text3','TextController@text3');// 测试3
 Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
 Route::get('wx/token','WeiXinController@getAccessToken');// 获取access_token
 Route::get('/wx/create_menu','WeiXinController@createMenu');// 创建菜单
-Route::get('/wx/check','WeiXinController@check');// 创建菜单
+Route::get('/wx/check','WeiXinController@check');// 验证签名
 
 // text 路由分组
 Route::prefix('/text')->group(function(){
