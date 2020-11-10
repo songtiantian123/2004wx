@@ -226,6 +226,7 @@ class WeiXinController extends Controller
                         'add_time' =>time(),
                         'openid' =>$data->FromUserName,
                         'msg_id' =>$data->MsgId,
+                        'media_id' =>$data->MediaId,
                     ];
                     MediaModel::insert($res);
                     $content = '已记录素材库中';
