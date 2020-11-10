@@ -87,8 +87,8 @@ class WeiXinController extends Controller
                             $toUser = $data->FromUserName;
                             $fromUser = $data->ToUserName;
                             $url = env('APP_URL');
-                            $wether = file_get_contents($url.'/wx/turing?info=河北天气');
-                            $result = $this->text($toUser,$fromUser,$wether);
+                            $callback  = file_get_contents($url.'/wx/turing?info=河北天气');
+                            $result = $this->text($toUser,$fromUser,$callback);
                             Log::info($result);
                             return $result;
                         }
@@ -154,8 +154,8 @@ class WeiXinController extends Controller
                         break;
                     default:
                         $url = env('APP_URL');
-                        $wether = file_get_contents($url.'/wx/turing?info='.$data->Content);
-                        $content = $wether;
+                        $callback  = file_get_contents($url.'/wx/turing?info=河北天气');
+                        $content = $callback;
                         $result = $this->text($toUser,$fromUser,$content);
                         return $result;
                         break;
@@ -260,6 +260,7 @@ class WeiXinController extends Controller
         $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
         return $info;
     }
+
     // 新增临时素材
     public function media_insert(Request $request){
         // 类型
