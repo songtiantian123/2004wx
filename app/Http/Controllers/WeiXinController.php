@@ -36,27 +36,17 @@ class WeiXinController extends Controller
             exit;
         }
 
-//        $echostr = $request->echostr;
-//        $signature = $_GET["signature"];
-//        $timestamp = $_GET["timestamp"];
-//        $nonce = $_GET["nonce"];
-//
-//        $token = env('WX_TOKEN');
-//        $tmpArr = array($token, $timestamp, $nonce);
-//        sort($tmpArr, SORT_STRING);
-//        $tmpStr = implode($tmpArr);
-//        $tmpStr = sha1($tmpStr);
-
 
         // 获取到微信推送过来的post数据
         $xml_str = file_get_contents("php://input");
+        // 记录日志
+        file_put_contents('wx_event.log',$xml_str);
         // 2 把xml文本转换为php的对象或数组
         $data = simplexml_load_string($xml_str);
-
-        if (!empty(strtolower($data))) { //验证通过
+        if (!empty(strtolower($data))) {
             $toUser = $data->FromUserName;
             $fromUser = $data->ToUserName;
-            file_put_contents('wx_event.log',$xml_str);// 记录日志
+
             // 判断该数据包是否是订阅的事件推送
             if (strtolower($data->MsgType) == "event") {
                 // 关注
@@ -182,7 +172,7 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-            // 被动回复用户文本
+            // 将素材存入数据库
             if(strtolower($data->MsgType)=='image'){
                 $media = MediaModel::where('media_url',$data->PicUrl)->first();
                 if(empty($media)){
