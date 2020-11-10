@@ -349,15 +349,15 @@ class WeiXinController extends Controller
             "button"=>[
                 [
                     'type' => 'click',
-                    'name'=> 'wx2004',
-                    'key'=> 'key_wx_2004',
+                    'name'=> 'wether',
+                    'key'=> 'HEBEI_WEATHER',
                 ],
                 [
                     'name'=>'list',
                     'sub_button'=> [
                         [
                             'type'=>'view',
-                            'name'=>'BAIDU',
+                            'name'=>'百度',
                             'url'=> 'https://www.baidu.com/',
                         ]
                     ]
@@ -368,7 +368,7 @@ class WeiXinController extends Controller
         $client = new Client();// 实例化客户端
         $response = $client->request('POST',$url,[
             'verify'=>false,
-            'body'=>json_encode($menu),
+            'body'=>json_encode($menu,JSON_UNESCAPED_UNICODE),
         ]);// 发起请求闭关响应
         $data = $response->getBody();
         echo $data;
