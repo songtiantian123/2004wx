@@ -95,6 +95,7 @@ class WeiXinController extends Controller
             // 判断该数据包是否是订阅的事件推送
             if (strtolower($data->MsgType) == "event") {
                 // 关注
+                
                 if (strtolower($data->Event == "subscribe")) {
                     // 回复用户消息  纯文本格式
                     $toUser = $data->FromUserName;
