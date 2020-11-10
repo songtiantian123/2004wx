@@ -153,9 +153,7 @@ class WeiXinController extends Controller
                         return $result;
                         break;
                     default:
-                        $url = env('APP_URL');
-                        $callback  = file_get_contents($url.'/wx/turing?info=河北天气');
-                        $content = $callback;
+                        $content = "我表示听不懂";
                         $result = $this->text($toUser,$fromUser,$content);
                         return $result;
                         break;
@@ -345,7 +343,35 @@ class WeiXinController extends Controller
      * 创建菜单
      */
     public function createMenu(){
-        $url = "";
+        $access_token = $this->getAccessToken();
+        $url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
+        $menu = [
+            "button"=>[
+                [
+                    'type' => 'click',
+                    'name'=> 'wx2004',
+                    'key'=> 'key_wx_2004',
+                ],
+                [
+                    'name'=>'list',
+                    'sub_button'=> [
+                        [
+                            'type'=>'view',
+                            'name'=>'BAIDU',
+                            'url'=> 'https://www.baidu.com/',
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        // 使用guzzle发起post请求
+        $client = new Client();// 实例化客户端
+        $response = $client->request('POST',$url,[
+            'verify'=>false,
+            'body'=>json_encode($menu),
+        ]);// 发起请求闭关响应
+        $data = $response->getBody();
+        echo $data;
     }
 }
 

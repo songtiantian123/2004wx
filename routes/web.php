@@ -30,8 +30,8 @@ Route::post('/text3','TextController@text3');// 测试3
 
 //Route::post('/wx','WeiXinController@checkSignature');// 微信接口
 Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
-Route::get('/token','WeiXinController@getAccessToken');// 获取access_token
-Route::get('/create_menu','WeiXinController@createMenu');// 创建菜单
+Route::get('wx/token','WeiXinController@getAccessToken');// 获取access_token
+Route::get('/wx/create_menu','WeiXinController@createMenu');// 创建菜单
 
 // text 路由分组
 Route::prefix('/text')->group(function(){
