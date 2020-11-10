@@ -135,9 +135,9 @@ class WeiXinController extends Controller
                         break;
                     case '图文':
                         $title = '图文测试';
-                        $description = 'IMG_0156.JPG';
+                        $description = '暂无图文描述';
                         $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
-                        $url = 'https://www.baidu.com';
+                        $url = 'D:\wwwroot\2004\wx\public\IMG_0156.JPG';
                         $result = $this->image_text($toUser,$fromUser,$title,$description,$content,$url);
                         return $result;
                         break;
