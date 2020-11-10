@@ -23,15 +23,16 @@ class WeiXinController extends Controller
         $tmpStr = implode($tmpArr);
         $tmpStr = sha1($tmpStr);
 
-        if ($tmpStr == $signature) { //验证通过
-            // 1 接收数据
-            $xml_str = file_get_contents("php://input");
-            // 记录日志
-            file_put_contents('wx_event.log',$xml_str);
-//            echo "";
-//            die;
-            // 2 把xml文本转换为php的对象或数组
-            $data = simplexml_load_string($xml_str);
+
+        // 获取到微信推送过来的post数据
+        $xml_str = file_get_contents("php://input");
+        // 2 把xml文本转换为php的对象或数组
+        $data = simplexml_load_string($xml_str);
+
+        if (!empty(strtolower($data))) { //验证通过
+            $toUser = $data->FromUserName;
+            $fromUser = $data->ToUserName;
+            file_put_contents('wx_event.log',$xml_str);// 记录日志
             // 判断该数据包是否是订阅的事件推送
             if (strtolower($data->MsgType) == "event") {
                 // 关注
