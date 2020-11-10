@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 use App\Model\UserModel;
 use GuzzleHttp\Client;
 use App\Model\MediaModel;
@@ -80,6 +81,18 @@ class WeiXinController extends Controller
                     if (strtolower($data->Event == 'unsubscribe')) {
                         // 清除用户信息
                     }
+                    // 用户点击一级菜单 汇报当前天气信息
+                    if($data->Event == 'CLICK'){
+                        if($data->EventKey == 'HEBEI_WEATHER'){
+                            $toUser = $data->FromUserName;
+                            $fromUser = $data->ToUserName;
+                            $url = env('APP_URL');
+                            $wether = file_get_contents($url.'/wx/turing?info=河北天气');
+                            $result = $this->text($toUser,$fromUser,$wether);
+                            Log::info($result);
+                            return $result;
+                        }
+                    }
                 }
             // 被动回复用户文本
             if(strtolower($data->MsgType)=='text'){
@@ -146,32 +159,11 @@ class WeiXinController extends Controller
                         break;
                 }
             }
-            // 被动回复用户文本
-            if(strtolower($data->MsgType)=='image'){
-                $guzzle = $this->guzzle2();
-                $toUser = $data->FromUserName;
-                $fromUser = $data->ToUserName;
-                $media = MediaModel::where('media_url',$data->PicUrl)->first();
-                if(empty($media)){
-                    $data = [
-                        'media_id'=>$guzzle['media_id'],
-                        'media_url'=>$data->PicUrl,
-                        'media_type'=>$guzzle['image'],
-                        'add_time'=>time(),
-                        'openid'=>$data->FromUserName,
-                    ];
-                    MediaModel::insert($data);
-                    $content = '记录素材库中';
-                }else{
-                    $content = '此素材已存在';
-                }
-                $result = $this->text($toUser,$fromUser,$content);
-                return $result;
-            }
         } else {
             return false;
         }
     }
+
     // 1 回复文本消息
     private function text($toUser,$fromUser,$content){
         $template = "<xml>
@@ -344,6 +336,13 @@ class WeiXinController extends Controller
         ]);// 发起请求闭关响应
         $data = $response->getBody();
         echo $data;
+    }
+
+    /**
+     * 创建菜单
+     */
+    public function createMenu(){
+        $url = "";
     }
 }
 
