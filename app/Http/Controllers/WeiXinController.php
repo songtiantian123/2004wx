@@ -75,6 +75,7 @@ class WeiXinController extends Controller
                         break;
                 }
             }
+            // 关注 并入库
             if (strtolower($data->MsgType) == "event") {
                 // 关注
                 if (strtolower($data->Event == "subscribe")) {
@@ -112,16 +113,6 @@ class WeiXinController extends Controller
                     // 取消关注
                     if (strtolower($data->Event == 'unsubscribe')) {
                         // 清除用户信息
-                    }
-                    // 用户点击一级菜单 汇报当前天气信息
-                    if($data->Event == 'CLICK'){
-                        if($data->EventKey == 'HEBEI_WEATHER'){
-                            $url = env('APP_URL');
-                            $callback  = file_get_contents($url.'/wx/turing?info=河北天气');
-                            $result = $this->text($toUser,$fromUser,$callback);
-                            Log::info($result);
-                            return $result;
-                        }
                     }
                 }
             // 被动回复用户文本
@@ -193,7 +184,7 @@ class WeiXinController extends Controller
             if(strtolower($data->MsgType)=='image'){
                 $media = MediaModel::where('media_url',$data->PicUrl)->first();
 //                $media = MediaModel::where('openid',$data->FromUserName)->first();
-                if(!empty($media)){
+                if(empty($media)){
                     $res = [
                         'media_url' =>$data->PicUrl,
                         'media_type' => (string)$data->MsgType,
@@ -375,12 +366,12 @@ class WeiXinController extends Controller
         $key = 'wx:access_token';
         // 检测是否有token
         $token = Redis::get($key);
-        if ($token) {
-//            echo '有缓存';
-//            echo '</br>';
+        if ($token)
+        {
+
         } else {
-//            echo '无缓存';
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WX_APPID') . "&secret=" . env('WX_APPSECRET') . "";
+            // 使用guzzle发起get请求
             $client = new Client();// 实例化 客户端
             $response = $client->request('GET',$url,['verify'=>false]);// 发起请求闭关响应
             $json_str = $response->getBody(); // 服务器的响应数据
@@ -425,12 +416,12 @@ class WeiXinController extends Controller
         $menu = [
             "button"=>[
                 [
-                    'type' => 'click',
-                    'name'=> 'weather',
-                    'key'=> 'HEBEI_WEATHER',
+                    'type' => 'view',
+                    'name'=> '商城',
+                    'url'=> 'https://2004.liliqin.xyz/index.php/',
                 ],
                 [
-                    'name'=>'list',
+                    'name'=>'菜单',
                     'sub_button'=> [
                         [
                             'type'=>'view',
@@ -441,7 +432,12 @@ class WeiXinController extends Controller
                         'type'=>'click',
                         'name'=>'签到',
                         'key'=> 'sign',
-                    ]
+                    ],
+                        [
+                            'type' => 'click',
+                            'name'=> '天气',
+                            'key'=> 'HEBEI_WEATHER',
+                        ],
                     ]
                 ]
             ]
@@ -507,6 +503,17 @@ class WeiXinController extends Controller
         }
         Log::info('==='.$content);
         return $content;
+    }
+    /**
+     * 扫码关注
+     */
+    public function subscribe(){}
+    /**
+     * 下载多媒体素材
+     */
+    public function dlMedia(){
+        $token = "";
+        $media_id = '';
     }
 }
 
