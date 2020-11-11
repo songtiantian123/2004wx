@@ -232,12 +232,27 @@ class WeiXinController extends Controller
                 if(empty($media)){
                     $res = [
                         'media_url' =>$data->PicUrl,
-                        'media_type' => 'image',
+                        'media_type' => $data->MsgType,
                         'add_time' =>time(),
                         'openid' =>$data->FromUserName,
                         'msg_id' =>$data->MsgId,
                         'media_id' =>$data->MediaId,
                     ];
+                    switch ($data->MsgType){
+                        case 'text':// 文本信息
+                            $data['content'] =(string)$data->Content;
+                            break;
+                        case 'image':// 图片信息
+                            $data['media_url'] =(string)$data->PicUrl;
+                            $data['media'] = (string)$data->MediaId;
+                            break;
+                        case 'voice':// 语音
+                            $data['media_id'] =(string)$data->MediaId;
+                            break;
+                        case 'video'://视频
+                            $data['media_id'] =(string)$data->MediaId;
+                            break;
+                    }
                     MediaModel::insert($res);
                     $content = '已记录素材库中';
                 }else{
