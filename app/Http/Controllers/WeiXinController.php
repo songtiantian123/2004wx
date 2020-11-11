@@ -72,7 +72,7 @@ class WeiXinController extends Controller
                         $data['media_id'] =(string)$data->MediaId;
                         break;
                 }
-                $insert_id = MediaModel::insertGetId($res);
+                $insert_id = UserOfficialModel::insertGetId($res);
                 if(!empty($res['media_id'])){
                     $url = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$res['media_id'];
                     $client = new Client(['verify'=>false]);// 实例化客户端
