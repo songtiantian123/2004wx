@@ -58,12 +58,12 @@ class WeiXinController extends Controller
             $fromUser = $data->ToUserName;
             $token = $this->getAccessToken();
             //将用户的会话记录 入库
-            if(!empty($data)){
+            if (!empty($data)) {
                 $toUser = $data->FromUserName;
                 $fromUser = $data->ToUserName;
                 // 将记录存入库中
                 $msg_type = $data->MsgType;
-                switch ($msg_type){
+                switch ($msg_type) {
                     case 'video':// 视频
                         $this->videohandler($data);
                         break;
@@ -73,9 +73,6 @@ class WeiXinController extends Controller
                     case 'text':// 文本
                         $this->textheadler($data);
                         break;
-//                    case 'image':// 图片
-//                        $this->imageheadler($data);
-//                        break;
                 }
             }
             // 关注 并入库
@@ -88,134 +85,132 @@ class WeiXinController extends Controller
                     $content = '欢迎关注微信公众号1';
                     // 获取用户信息
                     $token = $this->getAccessToken();
-                    $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$token."&openid=".$toUser."&lang=zh_CN";
-                    file_put_contents('logs.log',$url);
+                    $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $token . "&openid=" . $toUser . "&lang=zh_CN";
+                    file_put_contents('logs.log', $url);
                     $user = file_get_contents($url);
-                    $user = json_decode($user,true);
-                    $subscribe = UserModel::where('openid',$user['openid'])->first();
+                    $user = json_decode($user, true);
+                    $subscribe = UserModel::where('openid', $user['openid'])->first();
                     // 关注后存入数据库 已经关注 提示欢迎回来
-                    if(!empty($subscribe)){
+                    if (!empty($subscribe)) {
                         $content = '欢迎回来';
-                    }else{
+                    } else {
                         $userInfo = [
-                            'nickname'=>$user['nickname'],
-                            'openid'=>$user['openid'],
-                            'sex'=>$user['sex'],
-                            'city'=>$user['city'],
-                            'province'=>$user['province'],
-                            'country'=>$user['country'],
-                            'headimgurl'=>$user['headimgurl'],
-                            'subscribe_time'=>$user['subscribe_time'],
+                            'nickname' => $user['nickname'],
+                            'openid' => $user['openid'],
+                            'sex' => $user['sex'],
+                            'city' => $user['city'],
+                            'province' => $user['province'],
+                            'country' => $user['country'],
+                            'headimgurl' => $user['headimgurl'],
+                            'subscribe_time' => $user['subscribe_time'],
                         ];
                         UserModel::insert($userInfo);
                     }
                     // 发送消息
-                    $result = $this->text($toUser,$fromUser,$content);
+                    $result = $this->text($toUser, $fromUser, $content);
                     return $result;
-                    }
-                    // 取消关注
-                    if (strtolower($data->Event == 'unsubscribe')) {
-                        // 清除用户信息
-                    }
                 }
+                // 取消关注
+                if (strtolower($data->Event == 'unsubscribe')) {
+                    // 清除用户信息
+                }
+            }
             // 被动回复用户文本
-            if(strtolower($data->MsgType)=='text'){
+            if (strtolower($data->MsgType) == 'text') {
                 $toUser = $data->FromUserName;
                 $fromUser = $data->ToUserName;
-                switch ($data->Content){
+                switch ($data->Content) {
                     case '签到':
                         $content = '签到成功';
-                        $result = $this->text($toUser,$fromUser,$content);
+                        $result = $this->text($toUser, $fromUser, $content);
                         return $result;
                         break;
                     case '时间':
-                        $content = date('Y-m-d H:i:s',time());
-                        $result = $this->text($toUser,$fromUser,$content);
+                        $content = date('Y-m-d H:i:s', time());
+                        $result = $this->text($toUser, $fromUser, $content);
                         return $result;
                         break;
                     case '照片':
-                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ"; // 目前 id 是死的
-                        $result = $this->picture($toUser,$fromUser,$content);
+                        $content = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ"; // 目前 id 是死的
+                        $result = $this->picture($toUser, $fromUser, $content);
                         return $result;
                         break;
                     case '语音':
-                        $content  = "CIYQ3MwBK3gXJVGVzRgsMgdy1rBjbJ11Krv41r37uQIbKfDmfI6WchQ-ByA0ITVO";
-                        $result = $this->voice($toUser,$fromUser,$content);
+                        $content = "CIYQ3MwBK3gXJVGVzRgsMgdy1rBjbJ11Krv41r37uQIbKfDmfI6WchQ-ByA0ITVO";
+                        $result = $this->voice($toUser, $fromUser, $content);
                         return $result;
                         break;
                     case '视频':
                         $title = '视频测试';
                         $description = '暂无视频描述';
-                        $content  = "ANjOfBAbJi8U5VMB5Fep2e4CuT4cXD88JlEnEAAMCh1uQZyBLuDy8R67jYUwhLkp";
-                        $result = $this->video($toUser,$fromUser,$content,$title,$description);
+                        $content = "ANjOfBAbJi8U5VMB5Fep2e4CuT4cXD88JlEnEAAMCh1uQZyBLuDy8R67jYUwhLkp";
+                        $result = $this->video($toUser, $fromUser, $content, $title, $description);
                         return $result;
                         break;
                     case '音乐':
                         $title = '音乐测试';
                         $description = '暂无音乐描述';
                         $musicurl = 'https://wx.wyxxx.xyz/%E5%B0%8F.mp3';
-                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
-                        $result = $this->music($toUser,$fromUser,$title,$description,$musicurl,$content);
+                        $content = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
+                        $result = $this->music($toUser, $fromUser, $title, $description, $musicurl, $content);
                         return $result;
                         break;
                     case '图文':
                         $title = '图文测试';
                         $description = '暂无图文描述';
-                        $content  = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
+                        $content = "Eexi1YJmQ9NYVn95CoIB1nHHNnjDs1mjBcs2xK7kPkrAS29rTL8d224U1lqzl1TQ";
                         $url = 'https://www.baidu.com';
-                        $result = $this->image_text($toUser,$fromUser,$title,$description,$content,$url);
+                        $result = $this->image_text($toUser, $fromUser, $title, $description, $content, $url);
                         return $result;
                         break;
                     case '天气':
                         $key = 'd570bea572fd4f728f81686371ebbb2b';
-                        $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
+                        $uri = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=" . $key . "&gzip=n";
                         $api = file_get_contents($uri);
-                        $api = json_decode($api,true);
-                        $content = "天气状态：".$api['now']['text'].'
-                        风向：'.$api['now']['windDir'];
-                        $result = $this->text($toUser,$fromUser,$content);
+                        $api = json_decode($api, true);
+                        $content = "天气状态：" . $api['now']['text'] . '
+                        风向：' . $api['now']['windDir'];
+                        $result = $this->text($toUser, $fromUser, $content);
                         return $result;
                         break;
                     default:
                         $content = "我表示听不懂";
-                        $result = $this->text($toUser,$fromUser,$content);
+                        $result = $this->text($toUser, $fromUser, $content);
                         return $result;
                         break;
                 }
             }
-             //将素材存入数据库
-            if(strtolower($data->MsgType)=='image'){
+            //将素材存入数据库
+            if (strtolower($data->MsgType) == 'image') {
                 // 下载素材
                 $token = $this->getAccessToken();
                 $media_id = $data->MediaId;
-                $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
+                $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
                 $img = file_get_contents($url);
                 $media_path = 'image/2.jpg';
-                $res = file_put_contents($media_path,$img);
-                if($res){
-                    $media = MediaModel::where('media_url',$data->PicUrl)->first();
-                    if(empty($media)){
+                $res = file_put_contents($media_path, $img);
+                if ($res) {
+                    $media = MediaModel::where('media_url', $data->PicUrl)->first();
+                    if (empty($media)) {
                         $res = [
-                            'media_url' =>$data->PicUrl,
+                            'media_url' => $data->PicUrl,
                             'media_type' => (string)$data->MsgType,
-                            'add_time' =>time(),
-                            'openid' =>$data->FromUserName,
-                            'msg_id' =>(string)$data->MsgId,
-                            'media_id' =>$data->MediaId,
-                            'media_path'=>$media_path,
+                            'add_time' => time(),
+                            'openid' => $data->FromUserName,
+                            'msg_id' => (string)$data->MsgId,
+                            'media_id' => $data->MediaId,
+                            'media_path' => $media_path,
                         ];
                         MediaModel::insert($res);
                         $content = '已记录素材库中';
-                    }else{
+                    } else {
                         $content = '素材库已存在';
                     }
                     // 发送消息
-                    $result = $this->text($toUser,$fromUser,$content);
+                    $result = $this->text($toUser, $fromUser, $content);
                     return $result;
                 }
-                }
-
-
+            }
             // 点击一级菜单
             if($data->Event=='CLICK'){
                 // 天气
