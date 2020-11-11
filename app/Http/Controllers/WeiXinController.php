@@ -32,10 +32,10 @@ class WeiXinController extends Controller
     // 处理推送事件
     public function wxEvent(Request $request){
         // 验签
-//        if($this->check()==false){
-//            // TODO 验签不通过
-//            exit;
-//        }
+        if($this->check()==false){
+            // TODO 验签不通过
+            exit;
+        }
 
 
         // 获取到微信推送过来的post数据
@@ -44,7 +44,7 @@ class WeiXinController extends Controller
         file_put_contents('wx_event.log',$xml_str);
         // 2 把xml文本转换为php的对象或数组
         $data = simplexml_load_string($xml_str);
-        if (!empty(strtolower($data))) {
+        if (!empty($data)) {
             $toUser = $data->FromUserName;
             $fromUser = $data->ToUserName;
             $token = $this->getAccessToken();
