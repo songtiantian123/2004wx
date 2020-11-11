@@ -211,14 +211,28 @@ class WeiXinController extends Controller
                 $result = $this->text($toUser,$fromUser,$content);
                 return $result;
             }
-            // 一级菜单点击获取天气
+            // 点击一级菜单
             if($data->Event=='CLICK'){
+                // 天气
                 if($data->EventKey=='HEBEI_WEATHER'){
                     $key = 'd570bea572fd4f728f81686371ebbb2b';
                     $url = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
                     $callback = file_get_contents($url.'/wx/turing?info=weather');
                     $result = $this->text($toUser,$fromUser,$callback);
                     Log::info($result);
+                    return $result;
+                }
+                // 签到
+                if($data->EventKey=='sign'){
+                    $key = 'sign'.date('Y-m-d',time());
+                    $content = '签到成功';
+                    $user_sign = Redis::zrange($key,0,-1);
+                    if(in_array((string)$toUser,$fromUser,$user_sign)){
+                        $content = '已签到';
+                    }else{
+                        Redis::zadd($key,time(),(string)$toUser);
+                    }
+                    $result = $this->text($toUser,$fromUser,$content);
                     return $result;
                 }
             }
