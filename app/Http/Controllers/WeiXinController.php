@@ -57,7 +57,6 @@ class WeiXinController extends Controller
                     'media_type' => (string)$data->MsgType,
                     'msg_id' =>(string)$data->MsgId,
                 ];
-                print_r($res);
                 switch ($data->MsgType){
                     case 'text':
                         $data['content'] =(string)$data->Content;// 文本信息
