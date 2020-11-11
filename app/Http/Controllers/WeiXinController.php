@@ -58,53 +58,48 @@ class WeiXinController extends Controller
             $fromUser = $data->ToUserName;
             $token = $this->getAccessToken();
             //将用户的会话记录 入库
-            $msg_type = $data->MsgType;
-
-
-
-            $media = UserOfficialModel::where('openid',$data->FormUserName)->first();
-
-//            if(!empty($media)){
-//                $data = [
-//                    'add_time' => time(),
-//                    'user_id' =>  $media->openid,
-//                    'media_type' => (string)$data->MsgType,
-//                    'msg_id' =>(string)$data->MsgId,
-//                ];
-//                switch ($data->MsgType){
-//                    case 'text':
-//                        $data['content'] =(string)$data->Content;// 文本信息
-//                        break;
-//                    case 'image':
-//                        $data['media_url'] =(string)$data->PicUrl;// 图片信息
-//                        $data['media_id'] =(string)$data->MediaId;
-//                        break;
-//                    case 'voice':// 语音
-//                        $data['media_id'] =(string)$data->MediaId;
-//                        break;
-//                    case 'video'://视频
-//                        $data['media_id'] =(string)$data->MediaId;
-//                        break;
-//                }
-//                $insert_id = UserOfficialModel::insertGetId($data);
-//                if(!empty($res['media_id'])){
-//                    $url = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$res['media_id'];
-//                    $client = new Client(['verify'=>false]);// 实例化客户端
-//                    $response = $client->get($url);
-//                    $file_name = $response->getHeader('Content-disposition')[0];
-//                    $file_type = 'static/'.$response->getHeader('Content-Type')[0];
-//                    $addir = $file_type.date("/Ymd/",time());
-//                    if(!is_dir($addir)){
-//                        mkdir($addir,0700,true);
-//                        chmod($addir,0700);
-//                    }
-//                    $file_name = ltrim($file_name,"attachment;filename=\"");
-//                    $file_name = rtrim($file_name,'"');
-//                    $file_path = $addir.$file_name;
-//                    $client->get($url,['save_to'=>$file_path]);
-//                    MediaModel::where('id',$insert_id)->update(['local_path\'=>$file_path']);
-//                }
-//            }
+            $media = MediaModel::where('openid',$data->FormUserName)->first();
+            if(!empty($media)){
+                $data = [
+                    'add_time' => time(),
+                    'user_id' =>  $media->openid,
+                    'media_type' => (string)$data->MsgType,
+                    'msg_id' =>(string)$data->MsgId,
+                ];
+                switch ($data->MsgType){
+                    case 'text':
+                        $data['content'] =(string)$data->Content;// 文本信息
+                        break;
+                    case 'image':
+                        $data['media_url'] =(string)$data->PicUrl;// 图片信息
+                        $data['media_id'] =(string)$data->MediaId;
+                        break;
+                    case 'voice':// 语音
+                        $data['media_id'] =(string)$data->MediaId;
+                        break;
+                    case 'video'://视频
+                        $data['media_id'] =(string)$data->MediaId;
+                        break;
+                }
+                $insert_id = UserOfficialModel::insertGetId($data);
+                if(!empty($res['media_id'])){
+                    $url = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$res['media_id'];
+                    $client = new Client(['verify'=>false]);// 实例化客户端
+                    $response = $client->get($url);
+                    $file_name = $response->getHeader('Content-disposition')[0];
+                    $file_type = 'static/'.$response->getHeader('Content-Type')[0];
+                    $addir = $file_type.date("/Ymd/",time());
+                    if(!is_dir($addir)){
+                        mkdir($addir,0700,true);
+                        chmod($addir,0700);
+                    }
+                    $file_name = ltrim($file_name,"attachment;filename=\"");
+                    $file_name = rtrim($file_name,'"');
+                    $file_path = $addir.$file_name;
+                    $client->get($url,['save_to'=>$file_path]);
+                    MediaModel::where('id',$insert_id)->update(['local_path\'=>$file_path']);
+                }
+            }
              //判断该数据包是否是订阅的事件推送
             if (strtolower($data->MsgType) == "event") {
                 // 关注
@@ -452,7 +447,12 @@ class WeiXinController extends Controller
                             'type'=>'view',
                             'name'=>'百度',
                             'url'=> 'https://www.baidu.com/',
-                        ]
+                        ],
+                        [
+                        'type'=>'click',
+                        'name'=>'签到',
+                        'key'=> 'sign',
+                    ]
                     ]
                 ]
             ]
