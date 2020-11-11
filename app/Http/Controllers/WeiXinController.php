@@ -501,7 +501,7 @@ class WeiXinController extends Controller
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
         $img = file_get_contents($url);
 //        $rand = mt_rand('Y-m-d H:i:s').'jpg';
-        $media_path = 'image/2.jpg';
+        $media_path = '/image/2.jpg';
         $res = file_put_contents($media_path,$img);
         if($res){
             // TODO 保存成功
