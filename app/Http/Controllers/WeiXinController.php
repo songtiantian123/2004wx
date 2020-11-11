@@ -32,10 +32,10 @@ class WeiXinController extends Controller
     // 处理推送事件
     public function wxEvent(Request $request){
         // 验签
-        if($this->check()==false){
-            // TODO 验签不通过
-            exit;
-        }
+//        if($this->check()==false){
+//            // TODO 验签不通过
+//            exit;
+//        }
 
 
         // 获取到微信推送过来的post数据
