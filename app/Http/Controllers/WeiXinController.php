@@ -494,31 +494,31 @@ class WeiXinController extends Controller
     /**
      * 图片
      */
-    public function imageheadler($data){
-        // 下载素材
-        $token = $this->getAccessToken();
-        $media_id = $data->MediaId;
-        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
-        $img = file_get_contents($url);
-//        $rand = mt_rand('Y-m-d H:i:s').'jpg';
-        $media_path = '/image/2.jpg';
-        $res = file_put_contents($media_path,$img);
-        if($res){
-            // TODO 保存成功
-        }else{
-            // TODO 保存失败
-        }
-        // 入库
-        $info = [
-            'media_id'=>$media_id,
-            'openid'=>$data->FromUserName,
-            'media_type'=>$data->MsgType,
-            'msg_id'=>$data->MsgId,
-            'add_time'=>$data->CreateTime,
-            'media_path'=>$media_path,
-        ];
-        MediaModel::insertGetId($info);
-    }
+//    public function imageheadler($data){
+//        // 下载素材
+//        $token = $this->getAccessToken();
+//        $media_id = $data->MediaId;
+//        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
+//        $img = file_get_contents($url);
+////        $rand = mt_rand('Y-m-d H:i:s').'jpg';
+//        $media_path = 'image/2.jpg';
+//        $res = file_put_contents($media_path,$img);
+//        if($res){
+//            // TODO 保存成功
+//        }else{
+//            // TODO 保存失败
+//        }
+//        // 入库
+//        $info = [
+//            'media_id'=>$media_id,
+//            'openid'=>$data->FromUserName,
+//            'media_type'=>$data->MsgType,
+//            'msg_id'=>$data->MsgId,
+//            'add_time'=>$data->CreateTime,
+//            'media_path'=>$media_path,
+//        ];
+//        MediaModel::insertGetId($info);
+//    }
     /**
      * 和风天气
      */
@@ -544,10 +544,10 @@ class WeiXinController extends Controller
      */
     public function dlMedia(){
         $token = $this->getAccessToken();
-        $media_id = 'kxt0bLJ0KMGDdaIeJlbenqJ1qUCj4e7tc4XbHAJL4Hu7_jwfkVv7KDH-k6i1nC4Z';
+        $media_id = '0rvcLix_Dow95KZubfe2gmtClwG5P9hRXWeDNU6Kvl-_Ah4TJyUAMkxU4sOpC02Z';
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
         $img = file_get_contents($url);
-        $path = 'image/1.jpg';
+        $path = 'image/2.jpg';
         $res = file_put_contents($path,$img);
         var_dump($res);
     }
