@@ -74,7 +74,7 @@ class WeiXinController extends Controller
                         $this->textheadler($data);
                         break;
                     case 'image':// 图片
-                        $this->imageheadler();
+                        $this->imageheadler($data);
                         break;
                 }
             }
