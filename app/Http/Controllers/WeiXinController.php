@@ -211,6 +211,17 @@ class WeiXinController extends Controller
                 $result = $this->text($toUser,$fromUser,$content);
                 return $result;
             }
+            // 一级菜单点击获取天气
+            if($data->Event=='CLICK'){
+                if($data->EventKey=='HEBEI_WEATHER'){
+                    $key = 'd570bea572fd4f728f81686371ebbb2b';
+                    $url = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
+                    $callback = file_get_contents($url.'/wx/turing?info=weather');
+                    $result = $this->text($toUser,$fromUser,$callback);
+                    Log::info($result);
+                    return $result;
+                }
+            }
         } else {
             return false;
         }
@@ -466,6 +477,22 @@ class WeiXinController extends Controller
             'msg_id'=>$data->MsgId,
         ];
         MediaModel::insert($data);
+    }
+    /**
+     * 和风天气
+     */
+    public function weather(){
+        $url = 'http://api.k780.com:88/?app=weather.future&weaid=heze&&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json';
+        $weather = file_get_contents($url);
+        $weather = json_decode($weather,true);
+        if($weather['success']){
+            $content = "";
+            foreach($weather['result']as $v){
+                $content .='日期'.$v['days'].$v['week'].'当日温度：'.$v['temperature'].'天气：'.$v['weather'].'风向：'.$v['wind'];
+            }
+        }
+        Log::info('==='.$content);
+        return $content;
     }
 }
 
