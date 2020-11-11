@@ -185,26 +185,37 @@ class WeiXinController extends Controller
             }
              //将素材存入数据库
             if(strtolower($data->MsgType)=='image'){
-                $media = MediaModel::where('media_url',$data->PicUrl)->first();
-//                $media = MediaModel::where('openid',$data->FromUserName)->first();
-                if(empty($media)){
-                    $res = [
-                        'media_url' =>$data->PicUrl,
-                        'media_type' => (string)$data->MsgType,
-                        'add_time' =>time(),
-                        'openid' =>$data->FromUserName,
-                        'msg_id' =>(string)$data->MsgId,
-                        'media_id' =>$data->MediaId,
-                    ];
-                    MediaModel::insert($res);
-                    $content = '已记录素材库中';
-                }else{
-                    $content = '素材库已存在';
+                // 下载素材
+                $token = $this->getAccessToken();
+                $media_id = $data->MediaId;
+                $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
+                $img = file_get_contents($url);
+                $media_path = 'image/2.jpg';
+                $res = file_put_contents($media_path,$img);
+                if($res){
+                    $media = MediaModel::where('media_url',$data->PicUrl)->first();
+                    if(empty($media)){
+                        $res = [
+                            'media_url' =>$data->PicUrl,
+                            'media_type' => (string)$data->MsgType,
+                            'add_time' =>time(),
+                            'openid' =>$data->FromUserName,
+                            'msg_id' =>(string)$data->MsgId,
+                            'media_id' =>$data->MediaId,
+                            'media_path'=>$media_path,
+                        ];
+                        MediaModel::insert($res);
+                        $content = '已记录素材库中';
+                    }else{
+                        $content = '素材库已存在';
+                    }
+                    // 发送消息
+                    $result = $this->text($toUser,$fromUser,$content);
+                    return $result;
                 }
-                // 发送消息
-                $result = $this->text($toUser,$fromUser,$content);
-                return $result;
-            }
+                }
+
+
             // 点击一级菜单
             if($data->Event=='CLICK'){
                 // 天气
