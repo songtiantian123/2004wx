@@ -228,14 +228,15 @@ class WeiXinController extends Controller
             }
              //将素材存入数据库
             if(strtolower($data->MsgType)){
-                $media = MediaModel::where('media_url',$data->PicUrl)->first();
-                if(empty($media)){
+                //$media = MediaModel::where('media_url',$data->PicUrl)->first();
+                $media = MediaModel::where('openid',$data->FromUserName)->first();
+                if(!empty($media)){
                     $res = [
                         'media_url' =>$data->PicUrl,
-                        'media_type' => $data->MsgType,
+                        'media_type' => (string)$data->MsgType,
                         'add_time' =>time(),
                         'openid' =>$data->FromUserName,
-                        'msg_id' =>$data->MsgId,
+                        'msg_id' =>(string)$data->MsgId,
                         'media_id' =>$data->MediaId,
                     ];
                     switch ($data->MsgType){
