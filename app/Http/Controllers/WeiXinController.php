@@ -500,7 +500,7 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
         $img = file_get_contents($url);
-        $rand = mt_rand('Y-m-d H:i:s').'jpg';
+//        $rand = mt_rand('Y-m-d H:i:s').'jpg';
         $media_path = 'image/1.jpg';
         $res = file_put_contents($media_path,$img);
         if($res){
