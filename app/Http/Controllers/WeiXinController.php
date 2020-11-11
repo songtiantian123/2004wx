@@ -73,9 +73,9 @@ class WeiXinController extends Controller
                     case 'text':// 文本
                         $this->textheadler($data);
                         break;
-                    case 'image':// 图片
-                        $this->imageheadler($data);
-                        break;
+//                    case 'image':// 图片
+//                        $this->imageheadler($data);
+//                        break;
                 }
             }
             // 关注 并入库
