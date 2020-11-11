@@ -227,7 +227,7 @@ class WeiXinController extends Controller
                 }
             }
              //将素材存入数据库
-            if(strtolower($data->MsgType)=='image'){
+            if(strtolower($data->MsgType)){
                 $media = MediaModel::where('media_url',$data->PicUrl)->first();
                 if(empty($media)){
                     $res = [
