@@ -227,7 +227,7 @@ class WeiXinController extends Controller
                     $key = 'sign'.date('Y-m-d',time());
                     $content = '签到成功';
                     $user_sign = Redis::zrange($key,0,-1);
-                    if(in_array((string)$toUser,$fromUser,$user_sign)){
+                    if(in_array((string)$toUser,$user_sign)){
                         $content = '已签到';
                     }else{
                         Redis::zadd($key,time(),(string)$toUser);
