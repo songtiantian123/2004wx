@@ -488,8 +488,12 @@ class WeiXinController extends Controller
                     'media_path'=>$path,
                 ];
                 MediaModel::insert($data);
-                return $content = '已记录在库';
+                $content = '已记录在库';
+            }else{
+                $content = '已存在';
             }
+            $result = $this->text($toUser, $fromUser, $content);
+            return $result;
         }
     }
     /**
