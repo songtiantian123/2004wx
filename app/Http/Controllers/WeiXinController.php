@@ -474,7 +474,7 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "video/3.mp4";
+        $path = "video/jin.mp4";
         $res = file_put_contents($path,$image);
         if($res){
             $video=MediaModel::where('media_id',$data->MedisId)->first();
@@ -496,10 +496,10 @@ class WeiXinController extends Controller
      */
     protected function voiceheadler($data){
         $token = $this->getAccessToken();
-        $media_id = "1vUtnqbL3CX26jfeHVx1r2ZmgJAxZzaD6oxZj-sf5URHATyLNUUd48OLZQmnS9TY";
+        $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "voice/3.mp3";
+        $path = "voice/2.mp3";
         $res = file_put_contents($path,$image);
         if($res){
             $voice=MediaModel::where('media_id',$data->MedisId)->first();
