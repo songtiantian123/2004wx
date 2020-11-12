@@ -481,19 +481,16 @@ class WeiXinController extends Controller
             if(empty($video)){
                 // 入库
                 $data=[
+                    'media_url' => $data->PicUrl,
                     'add_time'=>$data->CreateTime,
                     'media_type'=>$data->MsgType,
+                    'openid' => $data->FromUserName,
                     'media_id'=>$data->MediaId,
                     'msg_id'=>$data->MsgId,
                     'media_path'=>$path,
                 ];
                 MediaModel::insert($data);
-                $content = '已记录在库';
-            }else{
-                $content = '已存在';
             }
-            $result = $this->text($toUser, $fromUser, $content);
-            return $result;
         }
     }
     /**
@@ -510,8 +507,10 @@ class WeiXinController extends Controller
             $voice=MediaModel::where('media_id',$data->MedisId)->first();
             if(empty($voice)){
                 $data=[
+                    'media_url' => $data->PicUrl,
                     'add_time'=>$data->CreateTime,
                     'media_type'=>$data->MsgType,
+                    'openid' => $data->FromUserName,
                     'media_id'=>$data->MediaId,
                     'msg_id'=>$data->MsgId,
                     'media_path'=>$path,
@@ -527,7 +526,8 @@ class WeiXinController extends Controller
         $data=[
             'add_time'=>$data->CreateTime,
             'media_type'=>$data->MsgType,
-            'openid'=>$data->MediaId,
+            'openid' => $data->FromUserName,
+            'media_id'=>$data->MediaId,
             'msg_id'=>$data->MsgId,
         ];
         MediaModel::insert($data);
