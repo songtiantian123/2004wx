@@ -523,12 +523,7 @@ class WeiXinController extends Controller
                     'media_path'=>$path,
                 ];
                 MediaModel::insert($data);
-                $content = "音频已存入素材库中";
-            }else{
-                $content = "此音频已存在";
             }
-            $result = $this->text($toUser,$fromUser,$content);
-            return $result;
         }
     }
     /**
@@ -635,28 +630,29 @@ class WeiXinController extends Controller
      * 微信网页授权
      * @return \Illuminate\Auth\Access\Response|void
      */
-    public function index(Request $request){
-        $code = $request->code;
-        // appid公众号
-        $appid = env('WX_APPID');
-        // secret
-        $secret = env('WX_APPSECRET');
-        // 通过code环球网页授权access_token
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$secret."&code=".$code."&grant_type=authorization_code";
-        echo $url;die;
-        $url_xml = file_get_contents($url);
-        $xml = json_decode($url_xml,true);
-        if(isset($xm['errcode'])){
-            if($xml['errcode']==40163){
-                return "验证码已失效";
-            }
-            $access_toekn = $xml['access_token'];
-            $openid = $xml['openid'];
-            // 拉取用户信息
-            $api = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_toekn."&openid=".$openid."&lang=zh_CN";
-            $user_info_obj = file_get_contents($api);
-            $user = json_decode($user_info_obj,true);
-        }
-    }
+
+//    public function index(Request $request){
+//        $code = $request->code;
+//        // appid公众号
+//        $appid = env('WX_APPID');
+//        // secret
+//        $secret = env('WX_APPSECRET');
+//        // 通过code环球网页授权access_token
+//        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$secret."&code=".$code."&grant_type=authorization_code";
+//        echo $url;die;
+//        $url_xml = file_get_contents($url);
+//        $xml = json_decode($url_xml,true);
+//        if(isset($xm['errcode'])){
+//            if($xml['errcode']==40163){
+//                return "验证码已失效";
+//            }
+//            $access_toekn = $xml['access_token'];
+//            $openid = $xml['openid'];
+//            // 拉取用户信息
+//            $api = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_toekn."&openid=".$openid."&lang=zh_CN";
+//            $user_info_obj = file_get_contents($api);
+//            $user = json_decode($user_info_obj,true);
+//        }
+//    }
 }
 
