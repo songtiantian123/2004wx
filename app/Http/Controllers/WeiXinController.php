@@ -520,7 +520,7 @@ class WeiXinController extends Controller
         }
     }
     /**
-     * text文本
+     * 记录text文本
      */
     protected function textheadler($data){
         $data=[
