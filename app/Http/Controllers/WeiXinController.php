@@ -428,7 +428,7 @@ class WeiXinController extends Controller
                 [
                     'type' => 'view',
                     'name'=> '商城',
-                    'url'=> 'http://tt.liliqin.xyz/index.php/',
+                    'url'=> 'https://tt.liliqin.xyz/',
                 ],
                 [
                     'name'=>'菜单',
