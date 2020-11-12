@@ -6,6 +6,7 @@ use App\Model\UserOfficialModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use App\Model\UserModel;
 use GuzzleHttp\Client;
 use App\Model\MediaModel;
@@ -188,7 +189,7 @@ class WeiXinController extends Controller
                 $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
                 $img = file_get_contents($url);
                 $media_path = 'image/2.jpg';
-                $res = file_put_contents($media_path, $img);
+                $res = file_put_contents($media_path,$img);
                 if ($res) {
                     $media = MediaModel::where('media_url', $data->PicUrl)->first();
                     if (empty($media)) {
@@ -451,6 +452,8 @@ class WeiXinController extends Controller
                 ]
             ]
         ];
+        $a=json_encode($menu,JSON_UNESCAPED_UNICODE);
+        dd($a);
         // 使用guzzle发起post请求
         $client = new Client();// 实例化客户端
         $response = $client->request('POST',$url,[
@@ -464,6 +467,13 @@ class WeiXinController extends Controller
      * 视频
      */
     protected function videohandler($data){
+        $toUser = $data->FromUserName;
+        $fromUser = $data->ToUserName;
+        // 下载
+        $token = $this->getAccessToken();
+        $media_id = $data->MediaId;
+        $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
+        $image = file_get_contents($url);
         // 入库
         $data=[
             'add_time'=>$data->CreateTime,
@@ -477,13 +487,25 @@ class WeiXinController extends Controller
      * 音频
      */
     protected function voiceheadler($data){
-        $data=[
-            'add_time'=>$data->CreateTime,
-            'media_type'=>$data->MsgType,
-            'media_id'=>$data->MediaId,
-            'msg_id'=>$data->MsgId,
-        ];
-        MediaModel::insert($data);
+        $token = $this->getAccessToken();
+        $media_id = "1vUtnqbL3CX26jfeHVx1r2ZmgJAxZzaD6oxZj-sf5URHATyLNUUd48OLZQmnS9TY";
+        $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
+        $image = file_get_contents($url);
+        $path = "voice/3.mp4";
+        $res = file_put_contents($path,$image);
+        if($res){
+            $voice=MediaModel::where('media_id',$data->MedisId)->first();
+            if(empty($voice)){
+                $data=[
+                    'add_time'=>$data->CreateTime,
+                    'media_type'=>$data->MsgType,
+                    'media_id'=>$data->MediaId,
+                    'msg_id'=>$data->MsgId,
+                    'media_path'=>$path,
+                ];
+                MediaModel::insert($data);
+            }
+        }
     }
     /**
      * text文本
@@ -557,5 +579,22 @@ class WeiXinController extends Controller
         $res = file_put_contents($path,$img);
         var_dump($res);
     }
+    /**
+     * 下载音频
+     */
+    public function vic(){
+        // 下载
+        $token = $this->getAccessToken();
+        $media_id = "1vUtnqbL3CX26jfeHVx1r2ZmgJAxZzaD6oxZj-sf5URHATyLNUUd48OLZQmnS9TY";
+        $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
+        $image = file_get_contents($url);
+        $path = "voice/2.mp4";
+        $res = file_put_contents($path,$image);
+        var_dump($res);
+
+    }
+    /**
+     * 下载视频
+     */
 }
 

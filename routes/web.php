@@ -38,5 +38,6 @@ Route::get('/wx/check','WeiXinController@check');// 验证签名
 Route::prefix('/text')->group(function(){
     Route::get('/guzzle1','TextController@guzzle1');// guzzle get请求
     Route::get('/guzzle2','WeiXinController@guzzle2');// guzzle post请求
-    Route::get('/media','WeiXinController@dlMedia');// 下载素材
+    Route::get('/media','WeiXinController@dlMedia');// 下载素材图片
+    Route::get('/video','WeiXinController@vic');// 下载素材音频
 });
