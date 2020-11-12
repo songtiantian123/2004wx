@@ -488,6 +488,7 @@ class WeiXinController extends Controller
                     'media_path'=>$path,
                 ];
                 MediaModel::insert($data);
+                return $content = '已记录在库';
             }
         }
     }
