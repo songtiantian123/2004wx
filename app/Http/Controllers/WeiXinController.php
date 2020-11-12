@@ -474,14 +474,22 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        // 入库
-        $data=[
-            'add_time'=>$data->CreateTime,
-            'media_type'=>$data->MsgType,
-            'media_id'=>$data->MediaId,
-            'msg_id'=>$data->MsgId,
-        ];
-        MediaModel::insert($data);
+        $path = "video/3.mp4";
+        $res = file_put_contents($path,$image);
+        if($res){
+            $video=MediaModel::where('media_id',$data->MedisId)->first();
+            if(empty($video)){
+                // 入库
+                $data=[
+                    'add_time'=>$data->CreateTime,
+                    'media_type'=>$data->MsgType,
+                    'media_id'=>$data->MediaId,
+                    'msg_id'=>$data->MsgId,
+                    'media_path'=>$path,
+                ];
+                MediaModel::insert($data);
+            }
+        }
     }
     /**
      * 音频
@@ -491,7 +499,7 @@ class WeiXinController extends Controller
         $media_id = "1vUtnqbL3CX26jfeHVx1r2ZmgJAxZzaD6oxZj-sf5URHATyLNUUd48OLZQmnS9TY";
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "voice/3.mp4";
+        $path = "voice/3.mp3";
         $res = file_put_contents($path,$image);
         if($res){
             $voice=MediaModel::where('media_id',$data->MedisId)->first();
@@ -568,7 +576,7 @@ class WeiXinController extends Controller
      */
     public function subscribe(){}
     /**
-     * 下载多媒体素材
+     * 下载多媒体素材图片
      */
     public function dlMedia(){
         $token = $this->getAccessToken();
@@ -596,5 +604,14 @@ class WeiXinController extends Controller
     /**
      * 下载视频
      */
+    public function vid(){
+        $token = $this->getAccessToken();
+        $media_id = "1vUtnqbL3CX26jfeHVx1r2ZmgJAxZzaD6oxZj-sf5URHATyLNUUd48OLZQmnS9TY";
+        $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
+        $image = file_get_contents($url);
+        $path = "video/2.mp4";
+        $res = file_put_contents($path,$image);
+        dd($res);
+    }
 }
 

@@ -39,5 +39,6 @@ Route::prefix('/text')->group(function(){
     Route::get('/guzzle1','TextController@guzzle1');// guzzle get请求
     Route::get('/guzzle2','WeiXinController@guzzle2');// guzzle post请求
     Route::get('/media','WeiXinController@dlMedia');// 下载素材图片
-    Route::get('/video','WeiXinController@vic');// 下载素材音频
+    Route::get('/voice','WeiXinController@vic');// 下载素材音频
+    Route::get('/video','WeiXinController@vid');// 下载素材视频
 });
