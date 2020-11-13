@@ -113,6 +113,8 @@ class WeiXinController extends Controller
                         }elseif($data->Event=='unsubscribehandler'){
                             echo '';
                             exit;
+                        }elseif($data->Event=='CLICK'){
+                            $this->clickhandler($data);
                         }
                         break;
                     case 'video':// 视频
@@ -124,51 +126,13 @@ class WeiXinController extends Controller
                     case 'text':// 文本
                         $this->textheadler($data);
                         break;
+                    case 'image':// 图片
+                        $this->imageheadler($data);
                     default:
                         echo 'default';
                 }
                 echo "";
             }
-            // 关注 并入库
-//            if (strtolower($data->MsgType) == "event") {
-//                // 关注
-//                if (strtolower($data->Event == "subscribe")) {
-//                    // 回复用户消息  纯文本格式
-//                    $toUser = $data->FromUserName;
-//                    $fromUser = $data->ToUserName;
-//                    $content = '欢迎关注微信公众号1';
-//                    // 获取用户信息
-//                    $token = $this->getAccessToken();
-//                    $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $token . "&openid=" . $toUser . "&lang=zh_CN";
-//                    file_put_contents('logs.log', $url);
-//                    $user = file_get_contents($url);
-//                    $user = json_decode($user, true);
-//                    $subscribe = UserModel::where('openid', $user['openid'])->first();
-//                    // 关注后存入数据库 已经关注 提示欢迎回来
-//                    if (!empty($subscribe)) {
-//                        $content = '欢迎回来';
-//                    } else {
-//                        $userInfo = [
-//                            'nickname' => $user['nickname'],
-//                            'openid' => $user['openid'],
-//                            'sex' => $user['sex'],
-//                            'city' => $user['city'],
-//                            'province' => $user['province'],
-//                            'country' => $user['country'],
-//                            'headimgurl' => $user['headimgurl'],
-//                            'subscribe_time' => $user['subscribe_time'],
-//                        ];
-//                        UserModel::insert($userInfo);
-//                    }
-//                    // 发送消息
-//                    $result = $this->text($toUser, $fromUser, $content);
-//                    return $result;
-//                }
-//                // 取消关注
-//                if (strtolower($data->Event == 'unsubscribe')) {
-//                    // 清除用户信息
-//                }
-//            }
             // 被动回复用户文本
             if (strtolower($data->MsgType) == 'text') {
                 $toUser = $data->FromUserName;
@@ -235,36 +199,36 @@ class WeiXinController extends Controller
                 }
             }
             //将素材存入数据库
-            if (strtolower($data->MsgType) == 'image') {
-                // 下载素材
-                $token = $this->getAccessToken();
-                $media_id = $data->MediaId;
-                $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
-                $img = file_get_contents($url);
-                $media_path = 'image/'.Str::random(11,99).".jpg";
-                $res = file_put_contents($media_path,$img);
-                if ($res) {
-                    $media = MediaModel::where('media_url', $data->PicUrl)->first();
-                    if (empty($media)) {
-                        $res = [
-                            'media_url' => $data->PicUrl,
-                            'media_type' => (string)$data->MsgType,
-                            'add_time' => time(),
-                            'openid' => $data->FromUserName,
-                            'msg_id' => (string)$data->MsgId,
-                            'media_id' => $data->MediaId,
-                            'media_path' => $media_path,
-                        ];
-                        MediaModel::insert($res);
-                        $content = '已记录素材库中';
-                    } else {
-                        $content = '素材库已存在';
-                    }
-                    // 发送消息
-                    $result = $this->text($toUser, $fromUser, $content);
-                    return $result;
-                }
-            }
+//            if (strtolower($data->MsgType) == 'image') {
+//                // 下载素材
+//                $token = $this->getAccessToken();
+//                $media_id = $data->MediaId;
+//                $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
+//                $img = file_get_contents($url);
+//                $media_path = 'image/'.Str::random(11,99).".jpg";
+//                $res = file_put_contents($media_path,$img);
+//                if ($res) {
+//                    $media = MediaModel::where('media_url', $data->PicUrl)->first();
+//                    if (empty($media)) {
+//                        $res = [
+//                            'media_url' => $data->PicUrl,
+//                            'media_type' => (string)$data->MsgType,
+//                            'add_time' => time(),
+//                            'openid' => $data->FromUserName,
+//                            'msg_id' => (string)$data->MsgId,
+//                            'media_id' => $data->MediaId,
+//                            'media_path' => $media_path,
+//                        ];
+//                        MediaModel::insert($res);
+//                        $content = '已记录素材库中';
+//                    } else {
+//                        $content = '素材库已存在';
+//                    }
+//                    // 发送消息
+//                    $result = $this->text($toUser, $fromUser, $content);
+//                    return $result;
+//                }
+//            }
             // 点击一级菜单
             if($data->Event=='CLICK'){
                 $this->clickhandler($data);
@@ -635,31 +599,39 @@ class WeiXinController extends Controller
     /**
      * 图片
      */
-//    public function imageheadler($data){
-//        // 下载素材
-//        $token = $this->getAccessToken();
-//        $media_id = $data->MediaId;
-//        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
-//        $img = file_get_contents($url);
-////        $rand = mt_rand('Y-m-d H:i:s').'jpg';
-//        $media_path = 'image/2.jpg';
-//        $res = file_put_contents($media_path,$img);
-//        if($res){
-//            // TODO 保存成功
-//        }else{
-//            // TODO 保存失败
-//        }
-//        // 入库
-//        $info = [
-//            'media_id'=>$media_id,
-//            'openid'=>$data->FromUserName,
-//            'media_type'=>$data->MsgType,
-//            'msg_id'=>$data->MsgId,
-//            'add_time'=>$data->CreateTime,
-//            'media_path'=>$media_path,
-//        ];
-//        MediaModel::insertGetId($info);
-//    }
+    public function imageheadler($data){
+        // 下载素材
+        $toUser= $data->FromUserName;
+        $fromUser = $data->ToUserName;
+        $token = $this->getAccessToken();
+        $media_id = $data->MediaId;
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
+        $img = file_get_contents($url);
+        $media_path = 'image/'.Str::random(11,99).".jpg";
+        $res = file_put_contents($media_path,$img);
+        // 入库
+        if ($res) {
+            $media = MediaModel::where('media_url', $data->PicUrl)->first();
+            if (empty($media)) {
+                $res = [
+                    'media_url' => $data->PicUrl,
+                    'media_type' => (string)$data->MsgType,
+                    'add_time' => time(),
+                    'openid' => $data->FromUserName,
+                    'msg_id' => (string)$data->MsgId,
+                    'media_id' => $data->MediaId,
+                    'media_path' => $media_path,
+                ];
+                MediaModel::insert($res);
+                $content = '已记录素材库中';
+            } else {
+                $content = '素材库已存在';
+            }
+            // 发送消息
+            $result = $this->text($toUser, $fromUser, $content);
+            return $result;
+        }
+    }
     /**
      * 添加客服 ×
      */
