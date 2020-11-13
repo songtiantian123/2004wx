@@ -115,6 +115,13 @@ class WeiXinController extends Controller
                             exit;
                         }elseif($data->Event=='CLICK'){
                             $this->clickhandler($data);
+                            switch ($data->EventKey){
+                                case 'HEBEI_WEATHER':
+                                    $content = $this->weather();
+                                    $result = $this->text($toUser,$fromUser,$content);
+                                    return $result;
+                                    break;
+                            }
                         }
                         break;
                     case 'video':// 视频
@@ -234,13 +241,13 @@ class WeiXinController extends Controller
             if($data->Event=='CLICK'){
                 $this->clickhandler($data);
                 // 天气
-                if($data->EventKey=='HEBEI_WEATHER'){
-                    $content = $this->weather();
-                    $toUser = $data->FromUserName;
-                    $fromUser = $data->ToUserName;
-                    $result = $this->text($toUser,$fromUser,$content);
-                    return $result;
-                }
+//                if($data->EventKey=='HEBEI_WEATHER'){
+//                    $content = $this->weather();
+//                    $toUser = $data->FromUserName;
+//                    $fromUser = $data->ToUserName;
+//                    $result = $this->text($toUser,$fromUser,$content);
+//                    return $result;
+//                }
                 // 签到
                 if($data->EventKey=='sign'){
                     $key = 'sign'.date('Y-m-d',time());
