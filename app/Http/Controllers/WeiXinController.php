@@ -116,8 +116,20 @@ class WeiXinController extends Controller
                         }elseif($data->Event=='CLICK'){
                             $this->clickhandler($data);
                             switch ($data->EventKey){
-                                case 'HEBEI_WEATHER':
+                                case 'HEBEI_WEATHER':// 天气
                                     $content = $this->weather();
+                                    $result = $this->text($toUser,$fromUser,$content);
+                                    return $result;
+                                    break;
+                                case 'sign':// 签到
+                                    $key = 'sign'.date('Y-m-d H:i:s');
+                                    $content = '签到成功';
+                                    $user_sign = Redis::zrange($key,0,-1);
+                                    if(in_array((string)$toUser,$user_sign)){
+                                        $content = '已签到';
+                                    }else{
+                                        Redis::zadd($key,time(),(string)$toUser);
+                                    }
                                     $result = $this->text($toUser,$fromUser,$content);
                                     return $result;
                                     break;
@@ -249,18 +261,19 @@ class WeiXinController extends Controller
 //                    return $result;
 //                }
                 // 签到
-                if($data->EventKey=='sign'){
-                    $key = 'sign'.date('Y-m-d',time());
-                    $content = '签到成功';
-                    $user_sign = Redis::zrange($key,0,-1);
-                    if(in_array((string)$toUser,$user_sign)){
-                        $content = '已签到';
-                    }else{
-                        Redis::zadd($key,time(),(string)$toUser);
-                    }
-                    $result = $this->text($toUser,$fromUser,$content);
-                    return $result;
-                }
+
+                //                if($data->EventKey=='sign'){
+                //                    $key = 'sign'.date('Y-m-d',time());
+                //                    $content = '签到成功';
+                //                    $user_sign = Redis::zrange($key,0,-1);
+                //                    if(in_array((string)$toUser,$user_sign)){
+                //                        $content = '已签到';
+                //                    }else{
+                //                        Redis::zadd($key,time(),(string)$toUser);
+                //                    }
+                //                    $result = $this->text($toUser,$fromUser,$content);
+                //                    return $result;
+                //                }
             }
         } else {
             return false;
