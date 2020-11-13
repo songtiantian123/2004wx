@@ -128,6 +128,7 @@ class WeiXinController extends Controller
                         break;
                     case 'image':// 图片
                         $this->imageheadler($data);
+                        break;
                     default:
                         echo 'default';
                 }
