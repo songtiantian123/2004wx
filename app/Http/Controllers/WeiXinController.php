@@ -381,43 +381,33 @@ class WeiXinController extends Controller
     public function clickhandler($data){
         $toUser= $data->FromUserName;
         $fromUser = $data->ToUserName;
-        switch ($data->EventKey){
-            case 'HEBEI_WEATHER':// 天气
-                $content = $this->weather();
-                $data=[
-                    'add_time'=>$data->CreateTime,
-                    'media_type'=>$data->Event,
-                    'openid'=>$data->FromUserName,
-                ];
-                MediaModel::insert($data);
-                $result = $this->text($toUser,$fromUser,$content);
-                return $result;
-                break;
-            case 'sign':// 签到
-                $key = 'sign'.date('Y-m-d H:i:s');
-                $content = '签到成功';
-                $user_sign = Redis::zrange($key,0,-1);
-                if(in_array((string)$toUser,$user_sign)){
-                    $content = '已签到';
-                }else{
-                    Redis::zadd($key,time(),(string)$toUser);
-                }
-                $result = $this->text($toUser,$fromUser,$content);
-                $data=[
-                    'add_time'=>$data->CreateTime,
-                    'media_type'=>$data->Event,
-                    'openid'=>$data->FromUserName,
-                ];
-                MediaModel::insert($data);
-                return $result;
-                break;
+        if($data->Event=='CLICK'){
+            switch ($data->EventKey){
+                case 'HEBEI_WEATHER':// 天气
+                    $content = $this->weather();
+                    $result = $this->text($toUser,$fromUser,$content);
+                    return $result;
+                    break;
+                case 'sign':// 签到
+                    $key = 'sign'.date('Y-m-d H:i:s');
+                    $content = '签到成功';
+                    $user_sign = Redis::zrange($key,0,-1);
+                    if(in_array((string)$toUser,$user_sign)){
+                        $content = '已签到';
+                    }else{
+                        Redis::zadd($key,time(),(string)$toUser);
+                    }
+                    $result = $this->text($toUser,$fromUser,$content);
+                    return $result;
+                    break;
+            }
         }
-//        $data=[
-//            'add_time'=>$data->CreateTime,
-//            'media_type'=>$data->Event,
-//            'openid'=>$data->FromUserName,
-//        ];
-//        MediaModel::insert($data);
+        $data=[
+            'add_time'=>$data->CreateTime,
+            'media_type'=>$data->Event,
+            'openid'=>$data->FromUserName,
+        ];
+        MediaModel::insert($data);
     }
     /**
      * 菜单view事件
