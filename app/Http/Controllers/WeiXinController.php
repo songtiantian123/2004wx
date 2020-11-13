@@ -627,7 +627,7 @@ class WeiXinController extends Controller
                 MediaModel::insert($res);
                 $content = '已记录素材库中';
             } else {
-                $content = '素材库已存在';
+                echo '素材库已存在';
             }
             // 发送消息
             $result = $this->text($toUser, $fromUser, $content);
