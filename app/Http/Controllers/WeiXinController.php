@@ -12,6 +12,46 @@ use GuzzleHttp\Client;
 use App\Model\MediaModel;
 class WeiXinController extends Controller
 {
+    /**
+     * 微信授权
+     */
+    public function index(){
+        $redirect ='http://2004.liliqin.xyz/'.'/wx/auth';
+        $appId = "wxb5ccb15a85957e7b";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=.$appId.&redirect_uri=.$redirect.&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+        return redirect($url);
+    }
+    /**
+     * 微信授权后登录
+     * @return bool
+     */
+    public function jump(){
+        $code = $_GET['code'];
+//            echo $code;die;
+        $appId = env("WX_APPID");
+//            echo $appId;die;
+        $secret = env('WX_APPSECRET');
+//            echo $secret;die;
+        $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appId."&secret=".$secret."&code=".$code."&grant_type=authorization_code";
+//            echo $url;die;
+        $xml = file_get_contents($url);
+        $xml_code = json_decode($xml,true);
+        if(isset($xml_code['errcode'])){
+            if($xml_code['errcode']==40163){
+                return "验证码已失效";
+            }
+        }
+        $access_token = $xml_code['access_token'];
+        $openid = $xml_code['openid'];
+        // 拉取用户信息
+        $api="https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
+        $user = file_get_contents($api);
+        $userInfo = json_decode($user,true);
+//            dd($userInfo);
+        if($userInfo){
+            return redirect('/');
+        }
+    }
     // 验证请求是否来自微信
     private function check(){
         $signature = $_GET["signature"];
@@ -452,8 +492,8 @@ class WeiXinController extends Controller
                 ]
             ]
         ];
-        $a=json_encode($menu,JSON_UNESCAPED_UNICODE);
-        dd($a);
+//        $a=json_encode($menu,JSON_UNESCAPED_UNICODE);
+//        dd($a);
         // 使用guzzle发起post请求
         $client = new Client();// 实例化客户端
         $response = $client->request('POST',$url,[
