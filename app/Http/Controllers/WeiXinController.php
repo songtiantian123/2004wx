@@ -253,7 +253,7 @@ class WeiXinController extends Controller
             }
             // 点击一级菜单
             if($data->Event=='CLICK'){
-                $this->clickhandler();
+                $this->clickhandler($data);
                 // 天气
                 if($data->EventKey=='HEBEI_WEATHER'){
                     $content = $this->weather();
