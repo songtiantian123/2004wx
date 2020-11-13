@@ -95,11 +95,9 @@ class WeiXinController extends Controller
         $data = simplexml_load_string($xml_str);
         $this->$data=$data;
         $msg_type = $data->MsgType;
-
         if ($tmpStr == $signature) {
             $toUser = $data->FromUserName;
             $fromUser = $data->ToUserName;
-            $token = $this->getAccessToken();
             //将用户的会话记录 入库
             if (!empty($data)) {
                 $toUser = $data->FromUserName;
