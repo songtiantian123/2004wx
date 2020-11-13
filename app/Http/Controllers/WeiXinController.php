@@ -111,7 +111,7 @@ class WeiXinController extends Controller
                         }elseif($data->Event=='unsubscribehandler'){
                             echo '';
                             exit;
-                        }elseif($data->Event=='CLICK'){
+                        }elseif($data->Event=='CLICK'){// 点击事件
                             $this->clickhandler($data);
                             switch ($data->EventKey){
                                 case 'HEBEI_WEATHER':// 天气
@@ -132,6 +132,8 @@ class WeiXinController extends Controller
                                     return $result;
                                     break;
                             }
+                        }elseif($data->Event=='VIEW'){// view事件
+                            $this->viewhandler($data);
                         }
                         break;
                     case 'video':// 视频
