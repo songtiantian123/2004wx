@@ -93,6 +93,9 @@ class WeiXinController extends Controller
         file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
         // 2 把xml文本转换为php的对象或数组
         $data = simplexml_load_string($xml_str);
+        $this->$data=$data;
+        $msg_type = $data->MsgType;
+
         if ($tmpStr == $signature) {
             $toUser = $data->FromUserName;
             $fromUser = $data->ToUserName;
@@ -102,8 +105,16 @@ class WeiXinController extends Controller
                 $toUser = $data->FromUserName;
                 $fromUser = $data->ToUserName;
                 // 将记录存入库中
-                $msg_type = $data->MsgType;
                 switch ($msg_type) {
+                    case 'event':
+                        if($data->Event=='subscribe'){
+                            echo $this->subscribe($data);
+                            exit;
+                        }elseif($data->Event=='unsubscribehandler'){
+                            echo '';
+                            exit;
+                        }
+                        break;
                     case 'video':// 视频
                         $this->videohandler($data);
                         break;
@@ -113,48 +124,51 @@ class WeiXinController extends Controller
                     case 'text':// 文本
                         $this->textheadler($data);
                         break;
+                    default:
+                        echo 'default';
                 }
+                echo "";
             }
             // 关注 并入库
-            if (strtolower($data->MsgType) == "event") {
-                // 关注
-                if (strtolower($data->Event == "subscribe")) {
-                    // 回复用户消息  纯文本格式
-                    $toUser = $data->FromUserName;
-                    $fromUser = $data->ToUserName;
-                    $content = '欢迎关注微信公众号1';
-                    // 获取用户信息
-                    $token = $this->getAccessToken();
-                    $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $token . "&openid=" . $toUser . "&lang=zh_CN";
-                    file_put_contents('logs.log', $url);
-                    $user = file_get_contents($url);
-                    $user = json_decode($user, true);
-                    $subscribe = UserModel::where('openid', $user['openid'])->first();
-                    // 关注后存入数据库 已经关注 提示欢迎回来
-                    if (!empty($subscribe)) {
-                        $content = '欢迎回来';
-                    } else {
-                        $userInfo = [
-                            'nickname' => $user['nickname'],
-                            'openid' => $user['openid'],
-                            'sex' => $user['sex'],
-                            'city' => $user['city'],
-                            'province' => $user['province'],
-                            'country' => $user['country'],
-                            'headimgurl' => $user['headimgurl'],
-                            'subscribe_time' => $user['subscribe_time'],
-                        ];
-                        UserModel::insert($userInfo);
-                    }
-                    // 发送消息
-                    $result = $this->text($toUser, $fromUser, $content);
-                    return $result;
-                }
-                // 取消关注
-                if (strtolower($data->Event == 'unsubscribe')) {
-                    // 清除用户信息
-                }
-            }
+//            if (strtolower($data->MsgType) == "event") {
+//                // 关注
+//                if (strtolower($data->Event == "subscribe")) {
+//                    // 回复用户消息  纯文本格式
+//                    $toUser = $data->FromUserName;
+//                    $fromUser = $data->ToUserName;
+//                    $content = '欢迎关注微信公众号1';
+//                    // 获取用户信息
+//                    $token = $this->getAccessToken();
+//                    $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $token . "&openid=" . $toUser . "&lang=zh_CN";
+//                    file_put_contents('logs.log', $url);
+//                    $user = file_get_contents($url);
+//                    $user = json_decode($user, true);
+//                    $subscribe = UserModel::where('openid', $user['openid'])->first();
+//                    // 关注后存入数据库 已经关注 提示欢迎回来
+//                    if (!empty($subscribe)) {
+//                        $content = '欢迎回来';
+//                    } else {
+//                        $userInfo = [
+//                            'nickname' => $user['nickname'],
+//                            'openid' => $user['openid'],
+//                            'sex' => $user['sex'],
+//                            'city' => $user['city'],
+//                            'province' => $user['province'],
+//                            'country' => $user['country'],
+//                            'headimgurl' => $user['headimgurl'],
+//                            'subscribe_time' => $user['subscribe_time'],
+//                        ];
+//                        UserModel::insert($userInfo);
+//                    }
+//                    // 发送消息
+//                    $result = $this->text($toUser, $fromUser, $content);
+//                    return $result;
+//                }
+//                // 取消关注
+//                if (strtolower($data->Event == 'unsubscribe')) {
+//                    // 清除用户信息
+//                }
+//            }
             // 被动回复用户文本
             if (strtolower($data->MsgType) == 'text') {
                 $toUser = $data->FromUserName;
@@ -684,7 +698,44 @@ class WeiXinController extends Controller
     /**
      * 扫码关注
      */
-    public function subscribe(){}
+    public function subscribe($data){
+        $toUser = $data->FromUserName;
+        $fromUser = $data->ToUserName;
+        $msgType = 'text';
+        $content = '欢迎关注我';
+        // 获取access_token
+        $token = $this->getAccessToken();
+        $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $token . "&openid=" . $toUser . "&lang=zh_CN";
+        file_put_contents('logs.log', $url);
+        $user = file_get_contents($url);
+        $user = json_decode($user, true);
+        $subscribe = UserModel::where('openid', $user['openid'])->first();
+        // 关注后存入数据库 已经关注 提示欢迎回来
+        if (!empty($subscribe)) {
+            $content = '欢迎回来';
+        } else {
+            $userInfo = [
+                'nickname' => $user['nickname'],
+                'openid' => $user['openid'],
+                'sex' => $user['sex'],
+                'city' => $user['city'],
+                'province' => $user['province'],
+                'country' => $user['country'],
+                'headimgurl' => $user['headimgurl'],
+                'subscribe_time' => $user['subscribe_time'],
+            ];
+            UserModel::insert($userInfo);
+        }
+        // 发送消息
+        $result = $this->text($toUser, $fromUser, $content);
+        return $result;
+    }
+    /**
+     * 取消关注
+     */
+    public function unsubscribehandler($data){
+
+    }
     /**
      * 本地下载多媒体素材图片
      */
