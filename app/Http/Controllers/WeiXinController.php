@@ -382,7 +382,7 @@ class WeiXinController extends Controller
     public function clickhandler($data){
         $data=[
             'add_time'=>$data->CreateTime,
-            'midda_type'=>$data->Event,
+            'media_type'=>$data->Event,
             'openid'=>$data->FromUserName,
         ];
         MediaModel::insert($data);
