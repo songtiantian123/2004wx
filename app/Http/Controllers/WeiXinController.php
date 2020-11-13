@@ -393,7 +393,7 @@ class WeiXinController extends Controller
     public function viewhandler($data){
         $data=[
             'add_time'=>$data->CreateTime,
-            'midda_type'=>$data->Event,
+            'media_type'=>$data->Event,
             'openid'=>$data->FromUserName,
             'msg_id'=>$data->MenuId,
         ];
