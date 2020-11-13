@@ -253,17 +253,13 @@ class WeiXinController extends Controller
             }
             // 点击一级菜单
             if($data->Event=='CLICK'){
+                $this->clickhandler();
                 // 天气
                 if($data->EventKey=='HEBEI_WEATHER'){
                     $content = $this->weather();
                     $toUser = $data->FromUserName;
                     $fromUser = $data->ToUserName;
                     $result = $this->text($toUser,$fromUser,$content);
-//                    $key = 'd570bea572fd4f728f81686371ebbb2b';
-//                    $url = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
-//                    $callback = file_get_contents($url.'/wx/turing?info=weather');
-//                    $result = $this->text($toUser,$fromUser,$callback);
-//                    Log::info($result);
                     return $result;
                 }
                 // 签到
@@ -378,27 +374,6 @@ class WeiXinController extends Controller
                             </xml>";
         $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
         return $info;
-    }
-    /**
-     * 使用guzzle发送HTTP请求
-     */
-    public function turing(Request $request){
-        $truing_key = env('TURING');
-        $params=[
-            'key'=>$truing_key,
-            'userid'=>'00011',
-        ];
-        $params['info'] = $request->input('info','hello');
-        $client = new Client();
-        $options = json_encode($params,JSON_UNESCAPED_UNICODE);
-        $data=[
-            'body'=>$options,
-            'headers'=>['content-type' => 'application/json']
-        ];
-        // 发送post请求
-        $respons = $client->post('http://www.tuling123.com/openapi/api', $data);
-        $callback = json_decode($respons->getBody()->getContents());
-        return $callback->text;
     }
     /**
      * 菜单click点击事件
