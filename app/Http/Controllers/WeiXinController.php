@@ -227,7 +227,7 @@ class WeiXinController extends Controller
                 $media_id = $data->MediaId;
                 $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
                 $img = file_get_contents($url);
-                $media_path = 'image/2.jpg';
+                $media_path = 'image/'.Str::random(1111,9999).".jpg";
                 $res = file_put_contents($media_path,$img);
                 if ($res) {
                     $media = MediaModel::where('media_url', $data->PicUrl)->first();
@@ -467,7 +467,7 @@ class WeiXinController extends Controller
                 [
                     'type' => 'view',
                     'name'=> '商城',
-                    'url'=> 'https://tt.liliqin.xyz/',
+                    'url'=> 'https://2004.liliqin.xyz/',
                 ],
                 [
                     'name'=>'菜单',
@@ -513,7 +513,7 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "video/jin.mp4";
+        $path = "video/".Str::random(1111,2222).".mp4";
         $res = file_put_contents($path,$image);
         if($res){
             $video=MediaModel::where('media_id',$data->MedisId)->first();
@@ -547,7 +547,7 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "voice/2.mp3";
+        $path = "voice/".Str::random(1111,2222).".mp3";
         $res = file_put_contents($path,$image);
         if($res){
             $voice=MediaModel::where('media_id',$data->MedisId)->first();
@@ -639,7 +639,7 @@ class WeiXinController extends Controller
         $media_id = '0rvcLix_Dow95KZubfe2gmtClwG5P9hRXWeDNU6Kvl-_Ah4TJyUAMkxU4sOpC02Z';
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$media_id;
         $img = file_get_contents($url);
-        $path = 'image/2.jpg';
+        $path = 'image/'.Str::random(111,222).".jpg";
         $res = file_put_contents($path,$img);
         var_dump($res);
     }
@@ -652,7 +652,7 @@ class WeiXinController extends Controller
         $media_id = "1vUtnqbL3CX26jfeHVx1r2ZmgJAxZzaD6oxZj-sf5URHATyLNUUd48OLZQmnS9TY";
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "voice/2.mp4";
+        $path = "voice/".Str::random(111,222).".mp4";
         $res = file_put_contents($path,$image);
         var_dump($res);
 
@@ -670,33 +670,5 @@ class WeiXinController extends Controller
         dd($res);
     }
 
-    /**
-     * 微信网页授权
-     * @return \Illuminate\Auth\Access\Response|void
-     */
-
-//    public function index(Request $request){
-//        $code = $request->code;
-//        // appid公众号
-//        $appid = env('WX_APPID');
-//        // secret
-//        $secret = env('WX_APPSECRET');
-//        // 通过code环球网页授权access_token
-//        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$secret."&code=".$code."&grant_type=authorization_code";
-//        echo $url;die;
-//        $url_xml = file_get_contents($url);
-//        $xml = json_decode($url_xml,true);
-//        if(isset($xm['errcode'])){
-//            if($xml['errcode']==40163){
-//                return "验证码已失效";
-//            }
-//            $access_toekn = $xml['access_token'];
-//            $openid = $xml['openid'];
-//            // 拉取用户信息
-//            $api = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_toekn."&openid=".$openid."&lang=zh_CN";
-//            $user_info_obj = file_get_contents($api);
-//            $user = json_decode($user_info_obj,true);
-//        }
-//    }
 }
 
