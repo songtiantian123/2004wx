@@ -16,10 +16,11 @@ class WeiXinController extends Controller
      * 微信授权
      */
     public function index(){
-        $redirect ='http://2004.liliqin.xyz/'.'/wx/auth';
+        echo '授权';die;
+        $redirect ='http://2004.liliqin.xyz/'.'wx/auth';
         $appId = "wxb5ccb15a85957e7b";
         $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=.$appId.&redirect_uri=.$redirect.&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-        return redirect($url);
+        //return redirect($url);
     }
     /**
      * 微信授权后登录
@@ -27,7 +28,7 @@ class WeiXinController extends Controller
      */
     public function jump(){
         $code = $_GET['code'];
-//            echo $code;die;
+            echo $code;die;
         $appId = env("WX_APPID");
 //            echo $appId;die;
         $secret = env('WX_APPSECRET');
