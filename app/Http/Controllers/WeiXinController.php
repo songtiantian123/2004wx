@@ -227,7 +227,7 @@ class WeiXinController extends Controller
                 $media_id = $data->MediaId;
                 $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $token . '&media_id=' . $media_id;
                 $img = file_get_contents($url);
-                $media_path = 'image/'.Str::random(1111,9999).".jpg";
+                $media_path = 'image/'.Str::random(11,99).".jpg";
                 $res = file_put_contents($media_path,$img);
                 if ($res) {
                     $media = MediaModel::where('media_url', $data->PicUrl)->first();
@@ -513,7 +513,7 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "video/".Str::random(1111,2222).".mp4";
+        $path = "video/".Str::random(11,99).".mp4";
         $res = file_put_contents($path,$image);
         if($res){
             $video=MediaModel::where('media_id',$data->MedisId)->first();
@@ -547,7 +547,7 @@ class WeiXinController extends Controller
         $media_id = $data->MediaId;
         $url="https://api.weixin.qq.com/cgi-bin/media/get?access_token=".$token."&media_id=".$media_id;
         $image = file_get_contents($url);
-        $path = "voice/".Str::random(1111,2222).".mp3";
+        $path = "voice/".Str::random(111,222).".mp3";
         $res = file_put_contents($path,$image);
         if($res){
             $voice=MediaModel::where('media_id',$data->MedisId)->first();
