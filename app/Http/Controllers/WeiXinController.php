@@ -255,11 +255,15 @@ class WeiXinController extends Controller
             if($data->Event=='CLICK'){
                 // 天气
                 if($data->EventKey=='HEBEI_WEATHER'){
-                    $key = 'd570bea572fd4f728f81686371ebbb2b';
-                    $url = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
-                    $callback = file_get_contents($url.'/wx/turing?info=weather');
-                    $result = $this->text($toUser,$fromUser,$callback);
-                    Log::info($result);
+                    $content = $this->weather();
+                    $toUser = $data->FromUserName;
+                    $fromUser = $data->ToUserName;
+                    $result = $this->text($toUser,$fromUser,$content);
+//                    $key = 'd570bea572fd4f728f81686371ebbb2b';
+//                    $url = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=".$key."&gzip=n";
+//                    $callback = file_get_contents($url.'/wx/turing?info=weather');
+//                    $result = $this->text($toUser,$fromUser,$callback);
+//                    Log::info($result);
                     return $result;
                 }
                 // 签到
@@ -375,7 +379,52 @@ class WeiXinController extends Controller
         $info = sprintf($template, $toUser, $fromUser, time(), 'news', 1 ,$title,$description,$content,$url);
         return $info;
     }
-
+    /**
+     * 使用guzzle发送HTTP请求
+     */
+    public function turing(Request $request){
+        $truing_key = env('TURING');
+        $params=[
+            'key'=>$truing_key,
+            'userid'=>'00011',
+        ];
+        $params['info'] = $request->input('info','hello');
+        $client = new Client();
+        $options = json_encode($params,JSON_UNESCAPED_UNICODE);
+        $data=[
+            'body'=>$options,
+            'headers'=>['content-type' => 'application/json']
+        ];
+        // 发送post请求
+        $respons = $client->post('http://www.tuling123.com/openapi/api', $data);
+        $callback = json_decode($respons->getBody()->getContents());
+        return $callback->text;
+    }
+    /**
+     * 菜单click点击事件
+     * @param Request $request
+     */
+    public function clickhandler($data){
+        $data=[
+            'add_time'=>$data->CreateTime,
+            'midda_type'=>$data->Event,
+            'openid'=>$data->FromUserName,
+        ];
+        MediaModel::insert($data);
+    }
+    /**
+     * 菜单view事件
+     * @param Request $request
+     */
+    public function viewhandler($data){
+        $data=[
+            'add_time'=>$data->CreateTime,
+            'midda_type'=>$data->Event,
+            'openid'=>$data->FromUserName,
+            'msg_id'=>$data->MenuId,
+        ];
+        MediaModel::insert($data);
+    }
     // 新增临时素材
     public function media_insert(Request $request){
         // 类型
@@ -468,14 +517,14 @@ class WeiXinController extends Controller
                     'name'=>'商城',
                     'sub_button'=>[
                         [
-                            'type'=>'click',
-                            'name'=>'每日推荐',
-                            'key'=>'recommend',
-                        ],
-                        [
                             'type' => 'view',
                             'name'=> '商城',
                             'url'=> 'https://2004.liliqin.xyz/',
+                        ],
+                        [
+                            'type'=>'click',
+                            'name'=>'每日推荐',
+                            'key'=>'recommend',
                         ]
                     ]
 
@@ -623,6 +672,25 @@ class WeiXinController extends Controller
 //        MediaModel::insertGetId($info);
 //    }
     /**
+     * 添加客服 ×
+     */
+    public function addService (){
+        $access_token = $this->getAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=".$access_token;
+        $client = new Client();
+        $response = $client->request('POST',$url,[
+            'verify'=>false,
+            'form_params'=>[
+                [
+                    'kf_account'=>"text@text",
+                    'nickname'=>'客服',
+                ],
+            ],
+        ]);
+        $data = $response->getBody();
+        echo $data;
+    }
+    /**
      * 和风天气
      */
     public function weather(){
@@ -681,7 +749,7 @@ class WeiXinController extends Controller
         dd($res);
     }
     /**
-     * 创建标签
+     * 创建标签  ×
      */
     public function label(Request $request){
         $label_name = $request->label_name;
@@ -717,7 +785,17 @@ class WeiXinController extends Controller
         }
     }
     /**
-     * 设置标签 取消标签
+     * 设置标签 取消标签 ×
+     */
+    public function u_label(Request $request){
+        $is_set = $request->is_set;
+        $tagid = $request->tagid;
+        $openid = $request->openid;
+        $openid = explode(',',$openid);
+
+    }
+    /**
+     * 获取用户的标签列表 ×
      */
 }
 

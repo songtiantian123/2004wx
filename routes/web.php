@@ -28,14 +28,17 @@ Route::post('/text3','TextController@text3');// 测试3
 
 
 // 微信
+Route::get('/wx/turing','WeiXinController@turing');// 添加客服消息
 //Route::post('/wx','WeiXinController@checkSignature');// 微信接口
 Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推送
 Route::get('wx/token','WeiXinController@getAccessToken');// 获取access_token
 Route::get('/wx/create_menu','WeiXinController@createMenu');// 创建菜单
 Route::get('/wx/check','WeiXinController@check');// 验证签名
 Route::get('/wx/label','WeiXinController@label');// 创面标签
+Route::get('/wx/user_label','WeiXinController@u_label');// 创面标签
 Route::get('/wx/authorize','WeiXinController@index');// 微信网页授权
 Route::get('/wx/auth','WeiXinController@jump');// 微信网页授权
+Route::get('/wx/service','WeiXinController@addService');// 添加客服消息
 
 // text 路由分组
 Route::prefix('/text')->group(function(){
@@ -44,4 +47,5 @@ Route::prefix('/text')->group(function(){
     Route::get('/media','WeiXinController@dlMedia');// 下载素材图片
     Route::get('/voice','WeiXinController@vic');// 下载素材音频
     Route::get('/video','WeiXinController@vid');// 下载素材视频
+    Route::get('/weather','WeiXinController@vid');// 和风天气
 });
