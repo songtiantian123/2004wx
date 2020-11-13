@@ -27,7 +27,6 @@ class WeiXinController extends Controller
      */
     public function jump(){
         $code = $_GET['code'];
-            echo $code;die;
         $appId = env("WX_APPID");
 //            echo $appId;die;
         $secret = env('WX_APPSECRET');
@@ -530,7 +529,12 @@ class WeiXinController extends Controller
                     'media_path'=>$path,
                 ];
                 MediaModel::insert($data);
+                $content = "视频已入库";
+            }else{
+                $content = '此视频已存在';
             }
+            $result = $this->text($toUser,$fromUser,$content);
+            return $result;
         }
     }
     /**
