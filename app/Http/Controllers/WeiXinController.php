@@ -515,26 +515,21 @@ class WeiXinController extends Controller
         $image = file_get_contents($url);
         $path = "video/jin.mp4";
         $res = file_put_contents($path,$image);
-        if($res){
-            $video=MediaModel::where('media_id',$data->MedisId)->first();
-            if(empty($video)){
+        if($res) {
+            $video = MediaModel::where('media_id', $data->MedisId)->first();
+            if (empty($video)) {
                 // 入库
-                $data=[
+                $data = [
                     'media_url' => $data->PicUrl,
-                    'add_time'=>$data->CreateTime,
-                    'media_type'=>$data->MsgType,
+                    'add_time' => $data->CreateTime,
+                    'media_type' => $data->MsgType,
                     'openid' => $data->FromUserName,
-                    'media_id'=>$data->MediaId,
-                    'msg_id'=>$data->MsgId,
-                    'media_path'=>$path,
+                    'media_id' => $data->MediaId,
+                    'msg_id' => $data->MsgId,
+                    'media_path' => $path,
                 ];
                 MediaModel::insert($data);
-//                $content = "视频已入库";
-            }else{
-//                $content = '此视频已存在';
             }
-//            $result = $this->text($toUser,$fromUser,$content);
-//            return $result;
         }
     }
     /**
