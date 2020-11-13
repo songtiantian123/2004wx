@@ -90,7 +90,7 @@ class WeiXinController extends Controller
         // 获取到微信推送过来的post数据
         $xml_str = file_get_contents("php://input");
         // 记录日志
-        file_put_contents('wx_event.log',$xml_str);
+        file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
         // 2 把xml文本转换为php的对象或数组
         $data = simplexml_load_string($xml_str);
         if ($tmpStr == $signature) {
@@ -465,9 +465,20 @@ class WeiXinController extends Controller
         $menu = [
             "button"=>[
                 [
-                    'type' => 'view',
-                    'name'=> '商城',
-                    'url'=> 'https://2004.liliqin.xyz/',
+                    'name'=>'商城',
+                    'sub_button'=>[
+                        [
+                            'type'=>'click',
+                            'name'=>'每日推荐',
+                            'key'=>'recommend',
+                        ],
+                        [
+                            'type' => 'view',
+                            'name'=> '商城',
+                            'url'=> 'https://2004.liliqin.xyz/',
+                        ]
+                    ]
+
                 ],
                 [
                     'name'=>'菜单',
@@ -669,6 +680,44 @@ class WeiXinController extends Controller
         $res = file_put_contents($path,$image);
         dd($res);
     }
-
+    /**
+     * 创建标签
+     */
+    public function label(Request $request){
+        $label_name = $request->label_name;
+        // 获取access_token
+        $access_token = $this->getAccessToken();
+        $url = "https://api.weixin.qq.com/cgi-bin/tags/create?access_token=".$access_token;
+        $xml = [
+            'tag'=>[
+                'name'=>$label_name,
+            ]
+        ];
+        $xml = json_encode($xml);
+//        dd($xml);
+        $client = new Client();
+        $respose = $client->request('POST',$url,[
+           'verify'=>false,
+           'body'=>$xml,
+        ]);
+//        dd($respose);
+        $callback = json_decode($respose->getBody()->getContents());
+        if(isset($callback->tag)){
+            if(is_object($callback->tag)){
+                return "添加菜单成功";
+            }
+        }else{
+            if($callback->errcode==45157){
+                return "标签名非法或者和其他的标签重名";
+            }else if($callback->errcode==45158){
+                return "标签名长度过长";
+            }else{
+                return "创建的标签数过过多";
+            }
+        }
+    }
+    /**
+     * 设置标签 取消标签
+     */
 }
 

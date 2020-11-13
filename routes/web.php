@@ -33,6 +33,7 @@ Route::match(['get','post'],'/wx','WeiXinController@wxEvent');// 接收事件推
 Route::get('wx/token','WeiXinController@getAccessToken');// 获取access_token
 Route::get('/wx/create_menu','WeiXinController@createMenu');// 创建菜单
 Route::get('/wx/check','WeiXinController@check');// 验证签名
+Route::get('/wx/label','WeiXinController@label');// 创面标签
 Route::get('/wx/authorize','WeiXinController@index');// 微信网页授权
 Route::get('/wx/auth','WeiXinController@jump');// 微信网页授权
 
