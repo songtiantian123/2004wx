@@ -98,8 +98,9 @@ class WeiXinController extends Controller
         if ($tmpStr == $signature) {
             $toUser = $data->FromUserName;
             $fromUser = $data->ToUserName;
+            $media = MediaModel::where('openid',$data->FromUserName)->first();
             //将用户的会话记录 入库
-            if (!empty($data)) {
+            if (!empty($media)) {
                 $toUser = $data->FromUserName;
                 $fromUser = $data->ToUserName;
                 // 将记录存入库中
