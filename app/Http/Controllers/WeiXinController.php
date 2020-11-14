@@ -263,18 +263,18 @@ class WeiXinController extends Controller
 //                }
                 // 签到
 
-                //                if($data->EventKey=='sign'){
-                //                    $key = 'sign'.date('Y-m-d',time());
-                //                    $content = '签到成功';
-                //                    $user_sign = Redis::zrange($key,0,-1);
-                //                    if(in_array((string)$toUser,$user_sign)){
-                //                        $content = '已签到';
-                //                    }else{
-                //                        Redis::zadd($key,time(),(string)$toUser);
-                //                    }
-                //                    $result = $this->text($toUser,$fromUser,$content);
-                //                    return $result;
-                //                }
+                                if($data->EventKey=='sign'){
+                                    $key = 'sign'.date('Y-m-d',time());
+                                    $content = '签到成功';
+                                    $user_sign = Redis::zrange($key,0,-1);
+                                    if(in_array((string)$toUser,$user_sign)){
+                                        $content = '已签到';
+                                    }else{
+                                        Redis::zadd($key,time(),(string)$toUser);
+                                    }
+                                    $result = $this->text($toUser,$fromUser,$content);
+                                    return $result;
+                                }
             }
         } else {
             return false;
