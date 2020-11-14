@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\GoodsModel;
 use App\Model\UserOfficialModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
@@ -132,6 +133,14 @@ class WeiXinController extends Controller
                                     $result = $this->text($toUser,$fromUser,$content);
                                     return $result;
                                     break;
+                                case 'recommend':// 每日推荐
+                                    $article = GoodsModel::inRandomOrder()->take(1)->first()->toArray();
+                                    $url = env('APP_URL')."/goods/detail".$article['goods_id'];
+                                    $title = '每日推荐';
+                                    $description = $article['keyword'];
+                                    $content = "VO9cj00ecwyYmvW4TDSmNpDYSWsCqVQr5tQu7tIPyonpmQBl37n-2N_fHpWJ5EZj";
+                                    $result = $this->image_text($toUser,$fromUser,$content,$url,$title,$description);
+                                    return $result;
                             }
                         }elseif($data->Event=='VIEW'){// view事件
                             $this->viewhandler($data);
@@ -251,31 +260,31 @@ class WeiXinController extends Controller
                 }
             }
              //点击一级菜单
-            if($data->Event=='CLICK'){
-                $this->clickhandler($data);
-                // 天气
-//                if($data->EventKey=='HEBEI_WEATHER'){
-//                    $content = $this->weather();
-//                    $toUser = $data->FromUserName;
-//                    $fromUser = $data->ToUserName;
-//                    $result = $this->text($toUser,$fromUser,$content);
-//                    return $result;
-//                }
-                // 签到
-
-                                if($data->EventKey=='sign'){
-                                    $key = 'sign'.date('Y-m-d',time());
-                                    $content = '签到成功';
-                                    $user_sign = Redis::zrange($key,0,-1);
-                                    if(in_array((string)$toUser,$user_sign)){
-                                        $content = '已签到';
-                                    }else{
-                                        Redis::zadd($key,time(),(string)$toUser);
-                                    }
-                                    $result = $this->text($toUser,$fromUser,$content);
-                                    return $result;
-                                }
-            }
+//            if($data->Event=='CLICK'){
+//                //$this->clickhandler($data);
+//                // 天气
+////                if($data->EventKey=='HEBEI_WEATHER'){
+////                    $content = $this->weather();
+////                    $toUser = $data->FromUserName;
+////                    $fromUser = $data->ToUserName;
+////                    $result = $this->text($toUser,$fromUser,$content);
+////                    return $result;
+////                }
+//
+//                // 签到
+////                if($data->EventKey=='sign'){
+////                                    $key = 'sign'.date('Y-m-d',time());
+////                                    $content = '签到成功';
+////                                    $user_sign = Redis::zrange($key,0,-1);
+////                                    if(in_array((string)$toUser,$user_sign)){
+////                                        $content = '已签到';
+////                                    }else{
+////                                        Redis::zadd($key,time(),(string)$toUser);
+////                                    }
+////                                    $result = $this->text($toUser,$fromUser,$content);
+////                                    return $result;
+////                                }
+//            }
         } else {
             return false;
         }
