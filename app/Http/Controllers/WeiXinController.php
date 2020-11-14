@@ -120,13 +120,13 @@ class WeiXinController extends Controller
                                     return $result;
                                     break;
                                 case 'sign':// 签到
-                                    $key = 'sign'.date('Y-m-d H:i:s');
+                                    $key = 'sign'.date('Y-m-d H:i:s',time());
                                     $content = '签到成功';
                                     $user_sign = Redis::zrange($key,0,-1);
                                     if(in_array((string)$toUser,$user_sign)){
                                         $content = '已签到';
                                     }else{
-                                        Redis::zadd($key,time(),(string)$toUser);
+                                        Redis::zAdd($key,time(),(string)$toUser);
                                     }
                                     $result = $this->text($toUser,$fromUser,$content);
                                     return $result;
