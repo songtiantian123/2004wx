@@ -379,24 +379,13 @@ class WeiXinController extends Controller
      * @param Request $request
      */
     public function clickhandler($data){
-        $toUser = $data->FromUserName;
-        $fromUser = $data->ToUserName;
-        $time1 = strtolower(date("Y-m-d"));
-        $media = MediaModel::where('add_time','>=',$time1)->first();
-        if($media){
-            $content = "已签到";
-        }else{
             $data = [
                 'add_time' => $data->CreateTime,
                 'media_type' => $data->Event,
                 'openid' => $data->FromUserName,
             ];
             MediaModel::insert($data);
-            $content = "签到成功";
         }
-            $result = $this->text($toUser,$fromUser,$content);
-            return $result;
-    }
     /**
      * 菜单view事件
      * @param Request $request
